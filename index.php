@@ -1,19 +1,11 @@
 <?php
 
-require_once("curl.php");
-require_once("functions.php");
+require_once "classes/Autoloader.php";
 
-$all_minutes = 0;
-$full_time = 0;
+define("ROOT_DIR", __DIR__);
 
-if($result["total"] > 0) {
-    foreach($result["result"] as $minutes) {
-        $all_minutes += intval($minutes["MINUTES"]);
-    }
-}
+Autoloader::register();
 
-if($all_minutes > 0) {
-    $full_time = convertMinutes($all_minutes);
-}
+$day_time = DayTime::get();
 
-mail("anattoliy90@gmail.com", "Day time", "Время за день - " . $full_time);
+mail("anattoliy90@gmail.com", "Time", "Время за день - " . $day_time);
