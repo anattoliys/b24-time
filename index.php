@@ -7,5 +7,8 @@ define("ROOT_DIR", __DIR__);
 Autoloader::register();
 
 $day_time = DayTime::get();
+$month_time = MonthTime::get();
 
-mail("anattoliy90@gmail.com", "Time", "Время за день - " . $day_time);
+$message = "Время за день - " . $day_time . "\nВремя за месяц - " . $month_time;
+
+mail("anattoliy90@gmail.com", "Time", $message);
