@@ -1,14 +1,20 @@
 <?php
 
-require_once "classes/Autoloader.php";
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-define("ROOT_DIR", __DIR__);
+require_once 'classes/Autoloader.php';
+
+define('ROOT_DIR', __DIR__);
 
 Autoloader::register();
 
-$day_time = DayTime::get();
-$month_time = MonthTime::get();
+$dayTime = new DayTime;
+$getDayTime = $dayTime->get();
 
-$message = "Время за день - " . $day_time . "\n\nВремя за месяц - " . $month_time;
+$monthTime = MonthTime::get();
 
-mail("anattoliy90@gmail.com", "Time", $message);
+$message = 'Время за день - ' . $getDayTime . '\n\nВремя за месяц - ' . $monthTime;
+
+mail('anattoliy90@gmail.com', 'Time', $message);
