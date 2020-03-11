@@ -22,7 +22,9 @@ class Tasks
 
         $curlExec = CurlQuery::exec($queryUrl, $queryData);
 
-        if($curlExec['next'] < $curlExec['total']) {
+        $next = isset($curlExec['next']) ? $curlExec['next'] : 0;
+
+        if($next < $curlExec['total']) {
             $totalPages = intval($curlExec['total'] / 50 + 1);
 
             for($i = 2; $i <= $totalPages; $i++) {
@@ -34,12 +36,14 @@ class Tasks
                 ]);
     
                 $curlExecExt = CurlQuery::exec($queryUrl, $queryDataExt);
+
+                $nextExt = isset($curlExecExt['next']) ? $curlExecExt['next'] : 0;
     
                 foreach($curlExecExt['result'] as $task) {
                     array_push($curlExec['result'], $task);
                 }
     
-                $curlExec['next'] = $curlExecExt['next'];
+                $next = $nextExt;
     
                 $i++;
             }
