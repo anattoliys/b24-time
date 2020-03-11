@@ -10,43 +10,41 @@ class Tasks
         $currentMonth = date('Y-m-01');
         $order = ['ID' => 'DESC'];
         $filter = ['RESPONSIBLE_ID' => $userId, '>=CREATED_DATE' => $currentMonth];
-        $select = ['ID'];
+        $select = ['ID', 'TIME_ESTIMATE', 'DURATION_FACT'];
 
-        $queryTaskUrl = 'https://elize.bitrix24.ru/rest/' . $userId . '/du2g5fu92egn852b/task.item.list.json';
-        $queryTaskData = http_build_query([
+        $queryUrl = 'https://elize.bitrix24.ru/rest/' . $userId . '/du2g5fu92egn852b/task.item.list.json';
+        $queryData = http_build_query([
             'ORDER' => $order,
             'FILTER' => $filter,
             'PARAMS' => ['NAV_PARAMS' => ['nPageSize' => 50, 'iNumPage' => 1]],
             'SELECT' => $select,
         ]);
 
-        $curlTaskExec = CurlQuery::exec($queryTaskUrl, $queryTaskData);
+        $curlExec = CurlQuery::exec($queryUrl, $queryData);
 
-        if($curlTaskExec['next'] < $curlTaskExec['total']) {
-            $totalPages = intval($curlTaskExec['total'] / 50 + 1);
+        if($curlExec['next'] < $curlExec['total']) {
+            $totalPages = intval($curlExec['total'] / 50 + 1);
 
             for($i = 2; $i <= $totalPages; $i++) {
-                $queryTaskDataExt = http_build_query([
+                $queryDataExt = http_build_query([
                     'ORDER' => $order,
                     'FILTER' => $filter,
                     'PARAMS' => ['NAV_PARAMS' => ['nPageSize' => 50, 'iNumPage' => $i]],
                     'SELECT' => $select,
                 ]);
     
-                $curlTaskExecExt = CurlQuery::exec($queryTaskUrl, $queryTaskDataExt);
+                $curlExecExt = CurlQuery::exec($queryUrl, $queryDataExt);
     
-                foreach($curlTaskExecExt['result'] as $task) {
-                    array_push($curlTaskExec['result'], $task);
+                foreach($curlExecExt['result'] as $task) {
+                    array_push($curlExec['result'], $task);
                 }
     
-                $curlTaskExec['next'] = $curlTaskExecExt['next'];
+                $curlExec['next'] = $curlExecExt['next'];
     
                 $i++;
             }
         }
 
-        $taskId = array_column($curlTaskExec['result'], 'ID');
-
-        return $taskId;
+        return $curlExec['result'];
     }
 }

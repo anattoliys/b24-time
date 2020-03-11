@@ -4,24 +4,25 @@ class DayTime extends Tasks
 {
     public function get()
     {
+        $allMinutes = 0;
+        
         if (!empty($this->getMonthTasks())) {
-            $taskId = [];
-            $allMinutes = 0;
+            $taskId = array_column($this->getMonthTasks(), 'ID');
             $currentDate = date('Y-m-d');
 
-            $queryTimeUrl = 'https://elize.bitrix24.ru/rest/' . $this->userId . '/du2g5fu92egn852b/task.elapseditem.getlist.json';
+            $queryUrl = 'https://elize.bitrix24.ru/rest/' . $this->userId . '/du2g5fu92egn852b/task.elapseditem.getlist.json';
         
-            $queryTimeData = http_build_query([
+            $queryData = http_build_query([
                 'ORDER' => ['ID' => 'DESC'],
                 'FILTER' => ['USER_ID' => $this->userId, 'TASK_ID' => $taskId, '>=CREATED_DATE' => $currentDate],
                 'SELECT' => ['ID', 'TASK_ID', 'MINUTES'],
                 'PARAMS' => [],
             ]);
 
-            $curlTimeExec = CurlQuery::exec($queryTimeUrl, $queryTimeData);
+            $curlExec = CurlQuery::exec($queryUrl, $queryData);
 
-            if(!empty($curlTimeExec['result'])) {
-                foreach($curlTimeExec['result'] as $time) {
+            if(!empty($curlExec['result'])) {
+                foreach($curlExec['result'] as $time) {
                     $allMinutes += intval($time['MINUTES']);
                 }
             }
