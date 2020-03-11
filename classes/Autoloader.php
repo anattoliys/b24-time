@@ -4,8 +4,8 @@ Class Autoloader
 {
     public static function register()
     {
-        spl_autoload_register(function ($class_name) {
-            $file = ROOT_DIR . "/classes/" . $class_name . ".php";
+        spl_autoload_register(function ($className) {
+            $file = ROOT_DIR . '/classes/' . $className . '.php';
 
             if (file_exists($file)) {
                 require_once $file;

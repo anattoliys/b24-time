@@ -4,64 +4,64 @@ class MonthTime
 {
     public static function get()
     {
-        $all_minutes = 0;
-        $current_month = date("Y-m-01");
+        $allMinutes = 0;
+        $currentMonth = date('Y-m-01');
 
-        $query_url = "https://elize.bitrix24.ru/rest/108/du2g5fu92egn852b/task.item.list.json";
+        $queryUrl = 'https://elize.bitrix24.ru/rest/108/du2g5fu92egn852b/task.item.list.json';
 
-        $arr_order = array("ID" => "DESC");
-        $arr_filter = array("RESPONSIBLE_ID" => "108", ">=CREATED_DATE" => $current_month);
-        $arr_select = array("ID", "TIME_ESTIMATE", "DURATION_FACT");
+        $order = ['ID' => 'DESC'];
+        $filter = ['RESPONSIBLE_ID' => 108, '>=CREATED_DATE' => $currentMonth];
+        $select = ['ID', 'TIME_ESTIMATE', 'DURATION_FACT'];
 
-        $query_data = http_build_query(array(
-            "ORDER" => $arr_order,
-            "FILTER" => $arr_filter,
-            "PARAMS" => array("NAV_PARAMS" => array("nPageSize" => 50, "iNumPage" => 1)),
-            "SELECT" => $arr_select,
-        ));
+        $queryData = http_build_query([
+            'ORDER' => $order,
+            'FILTER' => $filter,
+            'PARAMS' => ['NAV_PARAMS' => ['nPageSize' => 50, 'iNumPage' => 1]],
+            'SELECT' => $select,
+        ]);
 
-        $curl_exec = CurlQuery::exec($query_url, $query_data);
+        $curlExec = CurlQuery::exec($queryUrl, $queryData);
 
-        if($curl_exec["next"] < $curl_exec["total"]) {
-            $total_pages = intval($curl_exec["total"] / 50 + 1);
+        if($curlExec['next'] < $curlExec['total']) {
+            $totalPages = intval($curlExec['total'] / 50 + 1);
 
-            for($i = 2; $i <= $total_pages; $i++) {
-                $query_data = http_build_query(array(
-                    "ORDER" => $arr_order,
-                    "FILTER" => $arr_filter,
-                    "PARAMS" => array("NAV_PARAMS" => array("nPageSize" => 50, "iNumPage" => $i)),
-                    "SELECT" => $arr_select,
-                ));
+            for($i = 2; $i <= $totalPages; $i++) {
+                $queryData = http_build_query([
+                    'ORDER' => $order,
+                    'FILTER' => $filter,
+                    'PARAMS' => ['NAV_PARAMS' => ['nPageSize' => 50, 'iNumPage' => $i]],
+                    'SELECT' => $select,
+                ]);
     
-                $curl_exec_ext = CurlQuery::exec($query_url, $query_data);
+                $curlExecExt = CurlQuery::exec($queryUrl, $queryData);
     
-                foreach($curl_exec_ext["result"] as $task) {
-                    array_push($curl_exec["result"], $task);
+                foreach($curlExecExt['result'] as $task) {
+                    array_push($curlExec['result'], $task);
                 }
     
-                $curl_exec["next"] = $curl_exec_ext["next"];
+                $curlExec['next'] = $curlExecExt['next'];
     
                 $i++;
             }
         }
 
-        if(!empty($curl_exec["result"])) {
-            foreach($curl_exec["result"] as $task) {
-                $time_estimate = intval($task["TIME_ESTIMATE"]) / 60;
-                $duration_fact = intval($task["DURATION_FACT"]);
+        if(!empty($curlExec['result'])) {
+            foreach($curlExec['result'] as $task) {
+                $timeEstimate = intval($task['TIME_ESTIMATE']) / 60;
+                $durationFact = intval($task['DURATION_FACT']);
 
-                if($time_estimate > 0) {
-                    $all_minutes += $time_estimate;
+                if($timeEstimate > 0) {
+                    $allMinutes += $timeEstimate;
                 } else {
-                    $all_minutes += $duration_fact;
+                    $allMinutes += $durationFact;
                 }
             }
         }
 
-        if($all_minutes > 0) {
-            $all_minutes = ConvertMinutes::exec($all_minutes);
+        if($allMinutes > 0) {
+            $allMinutes = ConvertMinutes::exec($allMinutes);
         }
 
-        return $all_minutes;
+        return $allMinutes;
     }
 }

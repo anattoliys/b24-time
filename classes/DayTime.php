@@ -12,16 +12,16 @@ class DayTime
         $currentDate = date('Y-m-d');
         $currentMonth = date('Y-m-01');
 
-        $arrOrder = ['ID' => 'DESC'];
-        $arrFilter = ['RESPONSIBLE_ID' => $userId, '>=CREATED_DATE' => $currentMonth];
-        $arrSelect = ['ID'];
+        $order = ['ID' => 'DESC'];
+        $filter = ['RESPONSIBLE_ID' => $userId, '>=CREATED_DATE' => $currentMonth];
+        $select = ['ID'];
 
         $queryTaskUrl = 'https://elize.bitrix24.ru/rest/' . $userId . '/du2g5fu92egn852b/task.item.list.json';
         $queryTaskData = http_build_query([
-            'ORDER' => $arrOrder,
-            'FILTER' => $arrFilter,
+            'ORDER' => $order,
+            'FILTER' => $filter,
             'PARAMS' => ['NAV_PARAMS' => ['nPageSize' => 50, 'iNumPage' => 1]],
-            'SELECT' => $arrSelect,
+            'SELECT' => $select,
         ]);
 
         $curlTaskExec = CurlQuery::exec($queryTaskUrl, $queryTaskData);
@@ -31,10 +31,10 @@ class DayTime
 
             for($i = 2; $i <= $totalPages; $i++) {
                 $queryTaskDataExt = http_build_query([
-                    'ORDER' => $arrOrder,
-                    'FILTER' => $arrFilter,
+                    'ORDER' => $order,
+                    'FILTER' => $filter,
                     'PARAMS' => ['NAV_PARAMS' => ['nPageSize' => 50, 'iNumPage' => $i]],
-                    'SELECT' => $arrSelect,
+                    'SELECT' => $select,
                 ]);
     
                 $curlTaskExecExt = CurlQuery::exec($queryTaskUrl, $queryTaskDataExt);
