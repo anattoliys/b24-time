@@ -14,7 +14,7 @@ class DayTime extends Tasks
         
             $queryData = http_build_query([
                 'ORDER' => ['ID' => 'DESC'],
-                'FILTER' => ['USER_ID' => $this->userId, 'TASK_ID' => $taskId, '>=CREATED_DATE' => $currentDate],
+                'FILTER' => ['TASK_ID' => $taskId, '>=CREATED_DATE' => $currentDate],
                 'SELECT' => ['ID', 'TASK_ID', 'MINUTES'],
                 'PARAMS' => [],
             ]);
