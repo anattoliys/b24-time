@@ -16,6 +16,8 @@ $getDayTime = $dayTime->get();
 $monthTime = new MonthTime;
 $getMonthTime = $monthTime->get();
 
+//echo '<pre>';print_r(DbConn::connect());echo '</pre>';
+
 $message = 'Время за день - ' . $getDayTime . "\n\nВремя за месяц - " . $getMonthTime;
 
 mail('anattoliy90@gmail.com', 'Time', $message);
