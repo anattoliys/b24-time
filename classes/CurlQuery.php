@@ -1,11 +1,11 @@
 <?php
 
-Class CurlQuery
+class CurlQuery
 {
     public static function exec($queryUrl, $queryData)
     {
         $curl = curl_init();
-        
+
         curl_setopt_array($curl, [
             CURLOPT_SSL_VERIFYPEER => 0,
             CURLOPT_POST => 1,
@@ -14,7 +14,7 @@ Class CurlQuery
             CURLOPT_URL => $queryUrl,
             CURLOPT_POSTFIELDS => $queryData,
         ]);
-    
+
         $result = curl_exec($curl);
         curl_close($curl);
         $result = json_decode($result, 1);

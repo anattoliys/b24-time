@@ -1,12 +1,7 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+require_once 'config/config.php';
 require_once 'classes/Autoloader.php';
-
-define('ROOT_DIR', __DIR__);
 
 Autoloader::register();
 
@@ -15,8 +10,6 @@ $getDayTime = $dayTime->get();
 
 $monthTime = new MonthTime;
 $getMonthTime = $monthTime->get();
-
-//echo '<pre>';print_r(DbConn::connect());echo '</pre>';
 
 $message = 'Время за день - ' . $getDayTime . "\n\nВремя за месяц - " . $getMonthTime;
 
