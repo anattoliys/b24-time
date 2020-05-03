@@ -11,7 +11,7 @@ class Autoloader
             ];
 
             foreach ($directories as $directory) {
-                $file = DOCUMENT_ROOT . $directory . $class . '.php';
+                $file = $_SERVER['DOCUMENT_ROOT'] . $directory . $class . '.php';
 
                 if (file_exists($file)) {
                     require_once $file;
