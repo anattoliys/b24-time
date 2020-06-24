@@ -21,4 +21,20 @@ class Time
 
         return $time;
     }
+
+    public static function getTime()
+    {
+        $time = [];
+        $date = date('Y-m-01');
+
+        $db = Db::connect();
+        $sql = "SELECT * FROM time WHERE date >= '$date'";
+        $query = $db->query($sql, PDO::FETCH_ASSOC);
+
+        foreach ($query as $row) {
+            $time[] = $row;
+        }
+
+        return $time;
+    }
 }
