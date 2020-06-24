@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'chart' => 'views/chart/index',
-    '' => 'index',
+    'index' => 'index/index',
+    'chart' => 'chart/index',
 ];

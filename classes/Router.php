@@ -13,24 +13,50 @@ class Router
     private function getURI()
     {
         if (!empty($_SERVER['REQUEST_URI'])) {
-            return trim($_SERVER['REQUEST_URI'], '/');
+            $params = strstr($_SERVER['REQUEST_URI'], '?');
+            $pureUrl = str_replace($params, '', $_SERVER['REQUEST_URI']);
+            $uri = trim($_SERVER['REQUEST_URI'], '/');
+
+            if ($pureUrl == '/') {
+                $uri = trim('index/' . $params, '/');
+            }
+
+            return $uri;
         }
     }
 
     public function render()
     {
         $uri = $this->getURI();
+        $result = 0;
 
-        $controllerName = ucfirst($uri) . 'Controller';
-        $controllerFile = $_SERVER['DOCUMENT_ROOT'] . '/controllers/' . $controllerName . '.php';
-        $actionName = 'actionIndex';
+        foreach ($this->routes as $uriPattern => $path) {
+            if (preg_match("~$uriPattern~", $uri)) {
+                $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
+                $segments = explode('/', $internalRoute);
 
-        if (file_exists($controllerFile)) {
-            require_once $controllerFile;
+                $controllerName = ucfirst(array_shift($segments)) . 'Controller';
+                $actionName = 'action' . ucfirst(array_shift($segments));
+                $parameters = $segments;
+
+                $controllerFile = $_SERVER['DOCUMENT_ROOT'] . '/controllers/' . $controllerName . '.php';
+
+                if (file_exists($controllerFile)) {
+                    require_once $controllerFile;
+                }
+
+                $controllerObject = new $controllerName;
+
+                $result = call_user_func_array([$controllerObject, $actionName], $parameters);
+
+                if ($result != null) {
+                    break;
+                }
+            }
         }
 
-        $controllerObject = new $controllerName;
-
-        call_user_func_array([$controllerObject, $actionName], []);
+        if (!$result) {
+            require_once $_SERVER['DOCUMENT_ROOT'] . '/404.php';
+        }
     }
 }
