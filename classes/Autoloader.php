@@ -1,26 +1,20 @@
 <?php
 
-class Autoloader
-{
-    public static function register()
-    {
-        spl_autoload_register(function ($class) {
-            $directories = [
-                '/classes/',
-                '/models/',
-            ];
+spl_autoload_register(function ($class) {
+    $directories = [
+        '/classes/',
+        '/models/',
+    ];
 
-            foreach ($directories as $directory) {
-                $file = $_SERVER['DOCUMENT_ROOT'] . $directory . $class . '.php';
+    foreach ($directories as $directory) {
+        $file = $_SERVER['DOCUMENT_ROOT'] . $directory . $class . '.php';
 
-                if (file_exists($file)) {
-                    require_once $file;
+        if (file_exists($file)) {
+            require_once $file;
 
-                    return true;
-                }
-            }
-
-            return false;
-        });
+            return true;
+        }
     }
-}
+
+    return false;
+});
