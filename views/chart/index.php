@@ -3,6 +3,7 @@
 $dbTime = Time::getTime();
 
 $hours = [];
+$monthName = date('F');
 $dbDayTime = array_column($dbTime, 'dayTime');
 foreach ($dbDayTime as $item) {
     $hours[] = date('h', strtotime($item));
@@ -35,7 +36,24 @@ $day = implode(', ', $day);
                     data: [<?php echo $hours; ?>]
                 }]
             },
-            options: {}
+            options: {
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Day of <?php echo $monthName; ?>'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Hours'
+                        },
+                    }]
+                }
+            }
         });
     </script>
 
