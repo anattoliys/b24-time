@@ -22,7 +22,7 @@ class Time
         return $time;
     }
 
-    public static function getTime()
+    public static function getCurrentMonthTime()
     {
         $time = [];
         $date = date('Y-m-01');
