@@ -2,6 +2,11 @@
 
 class Db
 {
+    /**
+     * Establishes a connection to the database
+     *
+     * @return void
+     */
     public static function connect()
     {
         try {

@@ -2,6 +2,11 @@
 
 class DayTime extends Tasks
 {
+    /**
+     * Getting the time for today
+     *
+     * @return string
+     */
     public function get()
     {
         $allMinutes = 0;

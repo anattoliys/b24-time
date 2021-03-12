@@ -2,6 +2,13 @@
 
 class CurlQuery
 {
+    /**
+     * Getting data from the b24
+     *
+     * @param string $queryUrl
+     * @param string $queryData
+     * @return array
+     */
     public static function exec($queryUrl, $queryData)
     {
         $curl = curl_init();

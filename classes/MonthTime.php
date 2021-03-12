@@ -2,6 +2,11 @@
 
 class MonthTime extends Tasks
 {
+    /**
+     * Getting the time for the current month
+     *
+     * @return string
+     */
     public function get()
     {
         $allMinutes = 0;
