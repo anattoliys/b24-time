@@ -2,6 +2,11 @@
 
 class Time
 {
+    /**
+     * Writing the time to db
+     *
+     * @return bool
+     */
     public static function saveTime()
     {
         $date = date('Y-m-d');
@@ -22,6 +27,11 @@ class Time
         return $time;
     }
 
+    /**
+     * Getting time of current month from db
+     *
+     * @return array
+     */
     public static function getCurrentMonthTime()
     {
         $time = [];

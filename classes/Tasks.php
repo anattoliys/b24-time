@@ -4,6 +4,11 @@ class Tasks
 {
     protected $userId = 108;
 
+    /**
+     * Getting all tasks for the current month
+     *
+     * @return array
+     */
     protected function getMonthTasks()
     {
         $userId = $this->userId;

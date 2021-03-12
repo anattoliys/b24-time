@@ -10,6 +10,11 @@ class Router
         $this->routes = require $routsFolder;
     }
 
+    /**
+     * Getting curret url
+     *
+     * @return string
+     */
     private function getURI()
     {
         if (!empty($_SERVER['REQUEST_URI'])) {
@@ -25,6 +30,11 @@ class Router
         }
     }
 
+    /**
+     * Rendering the desired page
+     *
+     * @return void
+     */
     public function render()
     {
         $uri = $this->getURI();
