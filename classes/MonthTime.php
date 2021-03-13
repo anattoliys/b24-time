@@ -7,7 +7,7 @@ class MonthTime extends Tasks
      *
      * @return string
      */
-    public function get()
+    public function get($isConvertToHours = false)
     {
         $allMinutes = 0;
 
@@ -24,7 +24,7 @@ class MonthTime extends Tasks
             }
         }
 
-        if ($allMinutes > 0) {
+        if ($allMinutes > 0 && $isConvertToHours) {
             $allMinutes = ConvertMinutes::exec($allMinutes);
         }
 

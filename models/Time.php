@@ -45,6 +45,9 @@ class Time
             $time[] = $row;
         }
 
+        $query = null;
+        $db = null;
+
         return $time;
     }
 }
