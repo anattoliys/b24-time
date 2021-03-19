@@ -11,19 +11,13 @@ class TelegramBot
         $this->apiKey = $apiKey;
     }
 
-    /**
-     * Gets the chat info
-     *
-     * @return array
-     */
-    protected function getUpdates()
+    public function greetings($chatId, $name)
     {
-        $queryUrl = "https://api.telegram.org/bot{$this->apiKey}/getUpdates";
-        $queryData = '';
+        $message = "<b>Привет, {$name}!</b>\n\n";
+        $message .= 'Я буду присылать тебе статистику по времени за день'. "\n\n";
+        $message .= 'Для этого, введи свой id в битрикс24:'. "\n\n";
 
-        $curlExec = CurlQuery::exec($queryUrl, $queryData);
-
-        return $curlExec['result'][0];
+        $this->sendMessage($chatId, $message, 'html');
     }
 
     /**
@@ -33,25 +27,25 @@ class TelegramBot
      * @param integer $monthTime
      * @return void
      */
-    public function sendMessage($dayTime, $monthTime)
+    public function sendMessage($chatId, $message, $parseMode = '')
     {
-        $updates = $this->getUpdates();
-        $userId = $updates['message']['chat']['id'];
-        $userName = $updates['message']['chat']['first_name'];
-        $monthTimeHours = ConvertMinutes::exec($monthTime);
-        $money = number_format($monthTime * $this->rate / 60, 0, '.', ' ');
+        // $updates = $this->getUpdates();
+        // $userId = $updates['message']['chat']['id'];
+        // $userName = $updates['message']['chat']['first_name'];
+        // $monthTimeHours = ConvertMinutes::exec($monthTime);
+        // $money = number_format($monthTime * $this->rate / 60, 0, '.', ' ');
 
-        $text = "<b>Привет, {$userName}!</b>\n\n";
-        $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
-        $text .= $this->unichr('U+231A') . ' За день - ' . $dayTime . "\n";
-        $text .= $this->unichr('U+1F555') . ' За месяц - ' . $monthTimeHours . "\n";
-        $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $money;
+        // $text = "<b>Привет, {$userName}!</b>\n\n";
+        // $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
+        // $text .= $this->unichr('U+231A') . ' За день - ' . $dayTime . "\n";
+        // $text .= $this->unichr('U+1F555') . ' За месяц - ' . $monthTimeHours . "\n";
+        // $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $money;
 
         $queryUrl = "https://api.telegram.org/bot{$this->apiKey}/sendMessage";
         $queryData = [
-            'chat_id' => $userId,
-            'text' => $text,
-            'parse_mode' => 'html',
+            'chat_id' => $chatId,
+            'text' => $message,
+            'parse_mode' => $parseMode,
         ];
 
         $curlExec = CurlQuery::exec($queryUrl, $queryData);
@@ -66,5 +60,15 @@ class TelegramBot
     protected function unichr($i)
     {
         return html_entity_decode(preg_replace("/U\+([0-9A-F]{4,5})/", "&#x\\1;", $i), ENT_NOQUOTES, 'UTF-8');
+    }
+
+    public function getWebhookInfo()
+    {
+        $data = file_get_contents('php://input');
+        $data = json_decode($data, true);
+
+        // Log::getMessage($data);
+
+        return $data;
     }
 }
