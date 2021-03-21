@@ -2,7 +2,6 @@
 
 class TelegramBot
 {
-    private $rate = 400;
     private $apiKey;
 
     public function __construct()
@@ -11,19 +10,66 @@ class TelegramBot
         $this->apiKey = $apiKey;
     }
 
-    /**
-     * Gets the chat info
-     *
-     * @return array
-     */
-    protected function getUpdates()
+    public function dispatcher($data, $sendStatistic = false)
     {
-        $queryUrl = "https://api.telegram.org/bot{$this->apiKey}/getUpdates";
-        $queryData = '';
+        $chatId = $data['message']['chat']['id'];
+        $firstName = $data['message']['chat']['first_name'];
+        $message = $data['message']['text'];
+        $messagedId = $data['message']['message_id'];
+        $startMessageId = User::getStartMessageId($chatId);
 
-        $curlExec = CurlQuery::exec($queryUrl, $queryData);
+        if ($message == '/start') {
+            $this->greetings($chatId, $firstName, $messagedId);
+        } else if ($startMessageId + 2 == $messagedId) {
+            $this->conclusion($chatId, $message);
+        }
 
-        return $curlExec['result'][0];
+        if ($sendStatistic) {
+            $this->sendStatistic($data);
+        }
+    }
+
+    protected function greetings($chatId, $name, $messagedId)
+    {
+        $user = new User;
+        $userId = User::getByChatId($chatId);
+
+        if ($userId) {
+            $text = 'Вы уже указали id в битрикс 24';
+        } else {
+            $user->create($chatId, $name, $messagedId);
+
+            $text = "<b>Привет, {$name}!</b>\n\n";
+            $text .= 'Я буду присылать тебе статистику по времени за день'. "\n\n";
+            $text .= 'Для этого, введи свой id в битрикс 24:'. "\n\n";
+        }
+
+        $this->sendMessage($chatId, $text, 'html');
+    }
+
+    protected function conclusion($chatId, $message)
+    {
+        $user = new User;
+        $user->setB24Id($chatId, $message);
+
+        $text = $this->unichr('U+1F642') . ' Отлично!' . "\n\n";
+        $text .= 'Сообщения будут приходить в 13:00 и 19:00';
+
+        $this->sendMessage($chatId, $text, 'html');
+    }
+
+    protected function sendStatistic($data)
+    {
+        $monthTimeHours = ConvertMinutes::exec($data['monthTime']);
+        $money = number_format($data['monthTime'] * $data['rate'] / 60, 0, '.', ' ');
+
+        $text = "<b>Привет, {$data['name']}!</b>\n\n";
+        $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
+        $text .= $this->unichr('U+231A') . ' За день - ' . $data['dayTime'] . "\n";
+        $text .= $this->unichr('U+1F555') . ' За месяц - ' . $monthTimeHours . "\n";
+        $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $money;
+
+        $this->sendMessage($data['chatId'], $text, 'html');
     }
 
     /**
@@ -33,28 +79,24 @@ class TelegramBot
      * @param integer $monthTime
      * @return void
      */
-    public function sendMessage($dayTime, $monthTime)
+    protected function sendMessage($chatId, $text, $parseMode = '')
     {
-        $updates = $this->getUpdates();
-        $userId = $updates['message']['chat']['id'];
-        $userName = $updates['message']['chat']['first_name'];
-        $monthTimeHours = ConvertMinutes::exec($monthTime);
-        $money = number_format($monthTime * $this->rate / 60, 0, '.', ' ');
-
-        $text = "<b>Привет, {$userName}!</b>\n\n";
-        $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
-        $text .= $this->unichr('U+231A') . ' За день - ' . $dayTime . "\n";
-        $text .= $this->unichr('U+1F555') . ' За месяц - ' . $monthTimeHours . "\n";
-        $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $money;
-
         $queryUrl = "https://api.telegram.org/bot{$this->apiKey}/sendMessage";
         $queryData = [
-            'chat_id' => $userId,
+            'chat_id' => $chatId,
             'text' => $text,
-            'parse_mode' => 'html',
+            'parse_mode' => $parseMode,
         ];
 
         $curlExec = CurlQuery::exec($queryUrl, $queryData);
+    }
+
+    public function getWebhookData()
+    {
+        $data = file_get_contents('php://input');
+        $data = json_decode($data, true);
+
+        return $data;
     }
 
     /**
