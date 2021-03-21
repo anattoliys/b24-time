@@ -2,7 +2,7 @@
 
 class Log
 {
-    public static function addMessage($message)
+    public static function getMessage($message)
     {
         $fileName = $_SERVER['DOCUMENT_ROOT'] . '/log.txt';
         $now = date('d.m.Y H:i:s');

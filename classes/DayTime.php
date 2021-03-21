@@ -2,6 +2,13 @@
 
 class DayTime extends Tasks
 {
+    private $userId;
+
+    public function __construct($userId)
+    {
+        $this->userId = $userId;
+    }
+
     /**
      * Getting the time for today
      *
@@ -10,9 +17,10 @@ class DayTime extends Tasks
     public function get()
     {
         $allMinutes = 0;
+        $monthTasks = $this->getMonthTasks($this->userId);
 
-        if (!empty($this->getMonthTasks())) {
-            $taskId = array_column($this->getMonthTasks(), 'ID');
+        if (!empty($monthTasks)) {
+            $taskId = array_column($monthTasks, 'ID');
             $currentDate = date('Y-m-d');
 
             $queryUrl = 'https://elize.bitrix24.ru/rest/' . $this->userId . '/du2g5fu92egn852b/task.elapseditem.getlist.json';

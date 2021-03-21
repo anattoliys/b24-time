@@ -2,22 +2,19 @@
 
 class Tasks
 {
-    protected $userId = 108;
-
     /**
      * Getting all tasks for the current month
      *
      * @return array
      */
-    protected function getMonthTasks()
+    protected function getMonthTasks($userB24Id)
     {
-        $userId = $this->userId;
         $currentMonth = date('Y-m-01');
         $order = ['ID' => 'DESC'];
-        $filter = ['RESPONSIBLE_ID' => $userId, '>=CREATED_DATE' => $currentMonth];
+        $filter = ['RESPONSIBLE_ID' => $userB24Id, '>=CREATED_DATE' => $currentMonth];
         $select = ['ID', 'TIME_ESTIMATE', 'DURATION_FACT'];
 
-        $queryUrl = 'https://elize.bitrix24.ru/rest/' . $userId . '/du2g5fu92egn852b/task.item.list.json';
+        $queryUrl = 'https://elize.bitrix24.ru/rest/' . $userB24Id . '/du2g5fu92egn852b/task.item.list.json';
         $queryData = http_build_query([
             'ORDER' => $order,
             'FILTER' => $filter,

@@ -2,6 +2,13 @@
 
 class MonthTime extends Tasks
 {
+    private $userId;
+
+    public function __construct($userId)
+    {
+        $this->userId = $userId;
+    }
+
     /**
      * Getting the time for the current month
      *
@@ -10,9 +17,10 @@ class MonthTime extends Tasks
     public function get($isConvertToHours = false)
     {
         $allMinutes = 0;
+        $monthTasks = $this->getMonthTasks($this->userId);
 
-        if (!empty($this->getMonthTasks())) {
-            foreach ($this->getMonthTasks() as $task) {
+        if (!empty($monthTasks)) {
+            foreach ($monthTasks as $task) {
                 $timeEstimate = intval($task['TIME_ESTIMATE']) / 60;
                 $durationFact = intval($task['DURATION_FACT']);
 
