@@ -23,7 +23,7 @@ class DayTime extends Tasks
             $taskId = array_column($monthTasks, 'ID');
             $currentDate = date('Y-m-d');
 
-            $queryUrl = 'https://elize.bitrix24.ru/rest/' . $this->userId . '/du2g5fu92egn852b/task.elapseditem.getlist.json';
+            $queryUrl = B24_WEBHOOK . 'task.elapseditem.getlist.json';
 
             $queryData = http_build_query([
                 'ORDER' => ['ID' => 'DESC'],

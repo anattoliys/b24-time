@@ -14,7 +14,7 @@ class Tasks
         $filter = ['RESPONSIBLE_ID' => $userB24Id, '>=CREATED_DATE' => $currentMonth];
         $select = ['ID', 'TIME_ESTIMATE', 'DURATION_FACT'];
 
-        $queryUrl = 'https://elize.bitrix24.ru/rest/' . $userB24Id . '/du2g5fu92egn852b/task.item.list.json';
+        $queryUrl = B24_WEBHOOK . 'task.item.list.json';
         $queryData = http_build_query([
             'ORDER' => $order,
             'FILTER' => $filter,
