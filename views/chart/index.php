@@ -1,9 +1,27 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/views/layouts/header.php';
 
+$data = [];
+$userObj = new User;
+$users = $userObj->getAll();
 $dateFormat = 'YYYY-MM-DD';
 $timeFormat = 'HH:mm:ss';
-$dbTime = Time::getCurrentMonthTime();
-$firstTimeItemDate = $dbTime[0]['date'];
+
+if (empty($users)) {
+    die('no users');
+}
+
+foreach ($users as $key => $user) {
+    $rgbColor = '';
+
+    foreach(['r', 'g', 'b'] as $color) {
+        $rgbColor .= mt_rand(0, 255) . ', ';
+    }
+
+    $users[$key]['monthTime'] = Time::getUserMonthTime($user['id']);
+    $users[$key]['color'] = $rgbColor;
+}
+
+$firstTimeItemDate = $users[0]['monthTime'][0]['date'];
 $currentMonthName = date('F', strtotime($firstTimeItemDate));
 ?>
 
@@ -18,20 +36,24 @@ $currentMonthName = date('F', strtotime($firstTimeItemDate));
         let chart = new Chart(ctx, {
             type: 'line',
             data: {
-                datasets: [{
-                    backgroundColor: 'rgba(59, 200, 245, .5)',
-                    borderColor: 'rgba(59, 200, 245, 1)',
-                    label: 'Time is',
-                    
-                    data: [
-                        <?php foreach ($dbTime as $time): ?>
+                datasets: [
+                    <?php foreach ($users as $user): ?>
                             {
-                                x: moment('<?php echo $time["date"] ?>', '<?php echo $dateFormat ?>'),
-                                y: moment('<?php echo $time["dayTime"] ?>', '<?php echo $timeFormat ?>'),
-                            },
-                        <?php endforeach; ?>
-                    ]
-                }]    
+                            backgroundColor: 'rgba(<?php echo $user['color'] ?> .3)',
+                            borderColor: 'rgba(<?php echo $user['color'] ?> .6)',
+                            label: '<?php echo $user["name"] ?>',
+                            
+                            data: [
+                                <?php foreach ($user['monthTime'] as $time): ?>
+                                    {
+                                        x: moment('<?php echo $time["date"] ?>', '<?php echo $dateFormat ?>'),
+                                        y: moment('<?php echo $time["dayTime"] ?>', '<?php echo $timeFormat ?>'),
+                                    },
+                                <?php endforeach; ?>
+                            ]
+                        },
+                    <?php endforeach; ?>
+                ]
             },
             options: {
                 scales: {

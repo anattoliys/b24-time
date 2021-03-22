@@ -7,19 +7,15 @@ class Time
      *
      * @return bool
      */
-    public static function saveTime()
+    public static function saveTime($data)
     {
         $date = date('Y-m-d');
-        $dayTime = new DayTime;
-        $getDayTime = $dayTime->get();
-        $monthTime = new MonthTime;
-        $getMonthTime = $monthTime->get();
 
         $db = Db::connect();
-        $sql = 'INSERT INTO time (dayTime, monthTime, date) VALUES (?, ?, ?)';
+        $sql = 'INSERT INTO time (userId, dayTime, monthTime, date) VALUES (?, ?, ?, ?)';
 
         $query = $db->prepare($sql);
-        $time = $query->execute([$getDayTime, $getMonthTime, $date]);
+        $time = $query->execute([$data['userId'], $data['dayTime'], $data['monthTime'], $date]);
 
         $query = null;
         $db = null;
@@ -32,13 +28,13 @@ class Time
      *
      * @return array
      */
-    public static function getCurrentMonthTime()
+    public static function getUserMonthTime($userId)
     {
         $time = [];
         $date = date('Y-m-01');
 
         $db = Db::connect();
-        $sql = "SELECT * FROM time WHERE date >= '$date'";
+        $sql = "SELECT * FROM time WHERE date >= '$date' AND userId = '$userId'";
         $query = $db->query($sql, PDO::FETCH_ASSOC);
 
         foreach ($query as $row) {
