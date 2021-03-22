@@ -9,6 +9,8 @@ class User
         $date = date('Y-m-d G:i:s');
 
         $db = Db::connect();
+        $db->query("SET character_set_client='utf8mb4'");
+        $db->query("SET collation_connection='utf8mb4_general_ci'");
         $sql = 'INSERT INTO users (name, chatId, rate, startMessageId, creationDate) VALUES (?, ?, ?, ?, ?)';
 
         $query = $db->prepare($sql);
