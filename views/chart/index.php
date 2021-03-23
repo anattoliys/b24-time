@@ -17,12 +17,20 @@ foreach ($users as $key => $user) {
         $rgbColor .= mt_rand(0, 255) . ', ';
     }
 
-    $users[$key]['monthTime'] = Time::getUserMonthTime($user['id']);
     $users[$key]['color'] = $rgbColor;
+
+    $users[$key]['monthTime'] = Time::getUserMonthTime($user['id']);
 }
 
 $firstTimeItemDate = $users[0]['monthTime'][0]['date'];
 $currentMonthName = date('F', strtotime($firstTimeItemDate));
+
+foreach ($users as $key => $user) {
+    foreach ($user['monthTime'] as $k => $time) {
+        $users[$key]['monthTime'][$k]['hours'] = explode(':', $time['dayTime'])[0];
+        $users[$key]['monthTime'][$k]['minutes'] = explode(':', $time['dayTime'])[1];
+    }
+}
 ?>
 
     <canvas id="currentMonthTimeChart"></canvas>
@@ -42,12 +50,12 @@ $currentMonthName = date('F', strtotime($firstTimeItemDate));
                             backgroundColor: 'rgba(<?php echo $user['color'] ?> .3)',
                             borderColor: 'rgba(<?php echo $user['color'] ?> .6)',
                             label: '<?php echo $user["name"] ?>',
-                            
                             data: [
                                 <?php foreach ($user['monthTime'] as $time): ?>
                                     {
                                         x: moment('<?php echo $time["date"] ?>', '<?php echo $dateFormat ?>'),
-                                        y: moment('<?php echo $time["dayTime"] ?>', '<?php echo $timeFormat ?>'),
+                                        y: '<?php echo $time['hours'] ?>',
+                                        minutes: '<?php echo $time['minutes'] ?>',
                                     },
                                 <?php endforeach; ?>
                             ]
@@ -78,16 +86,27 @@ $currentMonthName = date('F', strtotime($firstTimeItemDate));
 							display: true,
 							labelString: 'Hours',
 						},
-                        type: 'time',
-                        time: {
-                            unit: 'hour',
-                            displayFormats: {
-                                hour: 'HH:mm'
-                            },
-                            tooltipFormat: 'HH:mm',
-                        },
+                        ticks: {
+                            callback: function(value, index, values) {
+                                if (Math.floor(value) === value) {
+                                    return value;
+                                }
+                            }
+                        }
 					}]
-				}
+				},
+
+                tooltips: {
+                    callbacks: {
+                        label: (tooltipItem, chart) => {
+                            const name = ' ' + chart.datasets[tooltipItem.datasetIndex].label + ': ';
+                            const hours = tooltipItem.value + ':';
+                            const minutes = chart.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].minutes;
+
+                            return name + hours + minutes;
+                        }
+                    }
+                }
             }
         });
     </script>
