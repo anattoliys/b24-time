@@ -1,10 +1,9 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/views/layouts/header.php';
 
-$data = [];
-$userObj = new User;
-$users = $userObj->getAll();
 $dateFormat = 'YYYY-MM-DD';
 $timeFormat = 'HH:mm:ss';
+$userObj = new User;
+$users = $userObj->getAll();
 
 if (empty($users)) {
     die('no users');
@@ -27,8 +26,9 @@ $currentMonthName = date('F', strtotime($firstTimeItemDate));
 
 foreach ($users as $key => $user) {
     foreach ($user['monthTime'] as $k => $time) {
-        $users[$key]['monthTime'][$k]['hours'] = explode(':', $time['dayTime'])[0];
-        $users[$key]['monthTime'][$k]['minutes'] = explode(':', $time['dayTime'])[1];
+        sscanf($time['dayTime'], "%d:%d:%d", $hours, $minutes, $seconds);
+        $time_seconds = isset($seconds) ? $hours * 3600 + $minutes * 60 + $seconds : $hours * 60 + $minutes;
+        $users[$key]['monthTime'][$k]['seconds'] = $time_seconds;
     }
 }
 ?>
@@ -48,13 +48,13 @@ foreach ($users as $key => $user) {
                     <?php foreach ($users as $user): ?>
                             {
                             backgroundColor: 'rgba(<?php echo $user['color'] ?> .3)',
-                            borderColor: 'rgba(<?php echo $user['color'] ?> .6)',
+                            borderColor: 'rgba(<?php echo $user['color'] ?> .8)',
                             label: '<?php echo $user["name"] ?>',
                             data: [
                                 <?php foreach ($user['monthTime'] as $time): ?>
                                     {
                                         x: moment('<?php echo $time["date"] ?>', '<?php echo $dateFormat ?>'),
-                                        y: '<?php echo $time['hours'] ?>',
+                                        y: '<?php echo $time['seconds'] ?>',
                                         minutes: '<?php echo $time['minutes'] ?>',
                                     },
                                 <?php endforeach; ?>
@@ -88,9 +88,12 @@ foreach ($users as $key => $user) {
 						},
                         ticks: {
                             callback: function(value, index, values) {
-                                if (Math.floor(value) === value) {
-                                    return value;
-                                }
+                                let hours = Math.floor(value / 60 / 60);
+                                let minutes = Math.floor(value / 60)  - (hours * 60);
+                                let roundMminutes = (Math.round(minutes/30) * 30) % 60;
+                                let time = hours.toString().padStart(2, '0') + ':' + roundMminutes.toString().padStart(2, '0');
+
+                                return time;
                             }
                         }
 					}]
@@ -100,10 +103,11 @@ foreach ($users as $key => $user) {
                     callbacks: {
                         label: (tooltipItem, chart) => {
                             const name = ' ' + chart.datasets[tooltipItem.datasetIndex].label + ': ';
-                            const hours = tooltipItem.value + ':';
-                            const minutes = chart.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].minutes;
+                            const hours = Math.floor(tooltipItem.value / 60 / 60);
+                            const minutes = Math.floor(tooltipItem.value / 60)  - (hours * 60);
+                            const time = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
 
-                            return name + hours + minutes;
+                            return name + time;
                         }
                     }
                 }
