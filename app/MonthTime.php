@@ -2,11 +2,11 @@
 
 class MonthTime extends Tasks
 {
-    private $userId;
+    private $user;
 
-    public function __construct($userId)
+    public function __construct($user)
     {
-        $this->userId = $userId;
+        $this->user = $user;
     }
 
     /**
@@ -17,7 +17,7 @@ class MonthTime extends Tasks
     public function get($isConvertToHours = false)
     {
         $allMinutes = 0;
-        $monthTasks = $this->getMonthTasks($this->userId);
+        $monthTasks = $this->getMonthTasks($this->user);
 
         if (!empty($monthTasks)) {
             foreach ($monthTasks as $task) {

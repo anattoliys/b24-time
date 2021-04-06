@@ -5,14 +5,21 @@ class Tasks
     /**
      * Getting all tasks for the current month
      *
+     * @param array $user
      * @return array
      */
-    protected function getMonthTasks($userB24Id)
+    protected function getMonthTasks($user)
     {
         $currentMonth = date('Y-m-01');
         $order = ['ID' => 'DESC'];
-        $filter = ['RESPONSIBLE_ID' => $userB24Id, '>=CREATED_DATE' => $currentMonth];
         $select = ['ID', 'TIME_ESTIMATE', 'DURATION_FACT'];
+        $filter['>=CREATED_DATE'] = $currentMonth;
+
+        if ($user['position'] == 'manager') {
+            $filter['CREATED_BY'] = $user['b24Id'];
+        } else {
+            $filter['RESPONSIBLE_ID'] = $user['b24Id'];
+        }
 
         $queryUrl = B24_WEBHOOK . 'task.item.list.json';
         $queryData = http_build_query([
