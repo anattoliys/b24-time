@@ -33,7 +33,7 @@ class MonthTime extends Tasks
         }
 
         if ($allMinutes > 0 && $isConvertToHours) {
-            $allMinutes = ConvertMinutes::exec($allMinutes);
+            $allMinutes = Converter::convertMinutesByFormat($allMinutes);
         }
 
         return $allMinutes;

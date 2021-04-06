@@ -60,7 +60,7 @@ class TelegramBot
 
     protected function sendStatistic($data)
     {
-        $monthTimeHours = ConvertMinutes::exec($data['monthTime']);
+        $monthTimeHours = Converter::convertMinutesByFormat($data['monthTime']);
         $money = number_format($data['monthTime'] * $data['rate'] / 60, 0, '.', ' ');
 
         $text = "<b>Привет, {$data['name']}!</b>\n\n";

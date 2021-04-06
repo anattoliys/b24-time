@@ -41,7 +41,7 @@ class DayTime extends Tasks
             }
 
             if ($allMinutes > 0) {
-                $allMinutes = ConvertMinutes::exec($allMinutes);
+                $allMinutes = Converter::convertMinutesByFormat($allMinutes);
             }
         }
 
