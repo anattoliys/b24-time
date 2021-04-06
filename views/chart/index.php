@@ -1,7 +1,6 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/views/layouts/header.php';
 
 $dateFormat = 'YYYY-MM-DD';
-$timeFormat = 'HH:mm:ss';
 $userObj = new User;
 $users = $userObj->getAll();
 
@@ -10,14 +9,7 @@ if (empty($users)) {
 }
 
 foreach ($users as $key => $user) {
-    $rgbColor = '';
-
-    foreach(['r', 'g', 'b'] as $color) {
-        $rgbColor .= mt_rand(0, 255) . ', ';
-    }
-
-    $users[$key]['color'] = $rgbColor;
-
+    $users[$key]['color'] = Chart::getColor();
     $users[$key]['monthTime'] = Time::getUserMonthTime($user['id']);
 }
 
@@ -25,10 +17,11 @@ $firstTimeItemDate = $users[0]['monthTime'][0]['date'];
 $currentMonthName = date('F', strtotime($firstTimeItemDate));
 
 foreach ($users as $key => $user) {
-    foreach ($user['monthTime'] as $k => $time) {
-        sscanf($time['dayTime'], "%d:%d:%d", $hours, $minutes, $seconds);
-        $time_seconds = isset($seconds) ? $hours * 3600 + $minutes * 60 + $seconds : $hours * 60 + $minutes;
-        $users[$key]['monthTime'][$k]['seconds'] = $time_seconds;
+    if (!empty($user['monthTime'])) {
+        foreach ($user['monthTime'] as $k => $time) {
+            $timeSeconds = Converter::convertToSeconds($time['dayTime']);
+            $users[$key]['monthTime'][$k]['seconds'] = $timeSeconds;
+        }
     }
 }
 ?>
