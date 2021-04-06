@@ -12,19 +12,19 @@ $users = $userObj->getAll();
 
 if (!empty($users)) {
     foreach ($users as $user) {
-        // $dayTime = new DayTime($user['b24Id']);
-        // $getDayTime = $dayTime->get();
+        $dayTime = new DayTime($user);
+        $getDayTime = $dayTime->get();
 
-        // $monthTime = new MonthTime($user['b24Id']);
-        // $getMonthTime = $monthTime->get();
+        $monthTime = new MonthTime($user['b24Id']);
+        $getMonthTime = $monthTime->get();
 
-        // $data = [
-        //     'name' => $user['name'],
-        //     'chatId' => $user['chatId'],
-        //     'rate' => $user['rate'],
-        //     'dayTime' => $getDayTime,
-        //     'monthTime' => $getMonthTime,
-        // ];
+        $data = [
+            'name' => $user['name'],
+            'chatId' => $user['chatId'],
+            'rate' => $user['rate'],
+            'dayTime' => $getDayTime,
+            'monthTime' => $getMonthTime,
+        ];
 
         // Log::getMessage($getDayTime);
     }
