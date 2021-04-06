@@ -29,6 +29,14 @@ class TelegramBot
         }
     }
 
+    /**
+     * Greeting the bot
+     *
+     * @param integer $chatId
+     * @param string $name
+     * @param integer $messagedId
+     * @return void
+     */
     protected function greetings($chatId, $name, $messagedId)
     {
         $user = new User;
@@ -47,6 +55,13 @@ class TelegramBot
         $this->sendMessage($chatId, $text, 'html');
     }
 
+    /**
+     * Conclusion the bot
+     *
+     * @param integer $chatId
+     * @param string $message
+     * @return void
+     */
     protected function conclusion($chatId, $message)
     {
         $user = new User;
@@ -58,6 +73,12 @@ class TelegramBot
         $this->sendMessage($chatId, $text, 'html');
     }
 
+    /**
+     * Sends statistics by time
+     *
+     * @param array $data
+     * @return void
+     */
     protected function sendStatistic($data)
     {
         $monthTimeHours = Converter::convertMinutesByFormat($data['monthTime']);
@@ -91,6 +112,11 @@ class TelegramBot
         $curlExec = CurlQuery::exec($queryUrl, $queryData);
     }
 
+    /**
+     * Retrieves webhook data
+     *
+     * @return array
+     */
     public function getWebhookData()
     {
         $data = file_get_contents('php://input');

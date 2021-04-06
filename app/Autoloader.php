@@ -2,7 +2,7 @@
 
 spl_autoload_register(function ($class) {
     $directories = [
-        '/classes/',
+        '/app/',
         '/models/',
     ];
 

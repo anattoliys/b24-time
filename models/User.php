@@ -4,6 +4,14 @@ class User
 {
     private $rate = 400;
 
+    /**
+     * Сreates a new user
+     *
+     * @param integer $chatId
+     * @param string $name
+     * @param integer $messagedId
+     * @return array
+     */
     public function create($chatId, $name, $messagedId)
     {
         $date = date('Y-m-d G:i:s');
@@ -22,6 +30,12 @@ class User
         return $user;
     }
 
+    /**
+     * Gets the start message id
+     *
+     * @param integer $chatId
+     * @return integer
+     */
     public static function getStartMessageId($chatId)
     {
         $startMessageId = 0;
@@ -77,6 +91,11 @@ class User
         return $result;
     }
 
+    /**
+     * Gets all users
+     *
+     * @return array
+     */
     public function getAll()
     {
         $users = [];
