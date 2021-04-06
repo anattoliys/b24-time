@@ -2,6 +2,11 @@
 
 class Chart
 {
+    /**
+     * Gets a random chart color
+     *
+     * @return string
+     */
     public static function getColor()
     {
         $rgbColor = '';
