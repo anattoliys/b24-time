@@ -10,8 +10,6 @@ class Log
      */
     public static function getMessage($message)
     {
-        echo '<pre>';print_r(gettype($message));echo '</pre>';
-
         $fileName = $_SERVER['DOCUMENT_ROOT'] . '/log.txt';
         $now = date('d.m.Y H:i:s');
         $sep = "\r\n----------------------------------\r\n";

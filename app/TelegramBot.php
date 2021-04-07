@@ -10,12 +10,19 @@ class TelegramBot
         $this->apiKey = $apiKey;
     }
 
+    /**
+     * Dispatcher
+     *
+     * @param array $data
+     * @param boolean $sendStatistic
+     * @return void
+     */
     public function dispatcher($data, $sendStatistic = false)
     {
-        $chatId = $data['message']['chat']['id'];
-        $firstName = $data['message']['chat']['first_name'];
-        $message = $data['message']['text'];
-        $messagedId = $data['message']['message_id'];
+        $chatId = isset($data['message']['chat']['id']) ? $data['message']['chat']['id'] : 0;
+        $firstName = isset($data['message']['chat']['first_name']) ? $data['message']['chat']['first_name'] : '';
+        $message = isset($data['message']['text']) ? $data['message']['text'] : '';
+        $messagedId = isset($data['message']['message_id']) ? $data['message']['message_id'] : 0;
         $startMessageId = User::getStartMessageId($chatId);
 
         if ($message == '/start') {

@@ -2,27 +2,25 @@
 
 class User
 {
-    private $rate = 400;
-
     /**
      * Сreates a new user
      *
      * @param integer $chatId
      * @param string $name
-     * @param integer $messagedId
+     * @param integer $messageId
      * @return array
      */
-    public function create($chatId, $name, $messagedId)
+    public function create($chatId, $name, $messageId)
     {
         $date = date('Y-m-d G:i:s');
 
         $db = Db::connect();
         $db->query("SET character_set_client='utf8mb4'");
         $db->query("SET collation_connection='utf8mb4_general_ci'");
-        $sql = 'INSERT INTO users (name, chatId, rate, startMessageId, creationDate) VALUES (?, ?, ?, ?, ?)';
+        $sql = 'INSERT INTO users (name, chatId, startMessageId, creationDate) VALUES (?, ?, ?, ?)';
 
         $query = $db->prepare($sql);
-        $user = $query->execute([$name, $chatId, $this->rate, $messagedId, $date]);
+        $user = $query->execute([$name, $chatId, $messageId, $date]);
 
         $query = null;
         $db = null;
@@ -50,7 +48,7 @@ class User
             $users[] = $row;
         }
 
-        $startMessageId = end($users)['startMessageId'];
+        $startMessageId = isset(end($users)['startMessageId']) ? end($users)['startMessageId'] : 0;
 
         $query = null;
         $db = null;
@@ -58,6 +56,12 @@ class User
         return $startMessageId;
     }
 
+    /**
+     * Gets user id by b24 id
+     *
+     * @param integer $chatId
+     * @return array
+     */
     public static function getByChatId($chatId)
     {
         $id = [];
@@ -77,13 +81,20 @@ class User
         return $id[0];
     }
 
-    public function setB24Id($chatId, $messaged)
+    /**
+     * Sets b24 id for user
+     *
+     * @param integer $chatId
+     * @param string $message
+     * @return bool
+     */
+    public function setB24Id($chatId, $message)
     {
         $db = Db::connect();
         $sql = 'UPDATE users SET b24Id = ? WHERE chatId = ?';
 
         $query = $db->prepare($sql);
-        $result = $query->execute([$messaged, $chatId]);
+        $result = $query->execute([$message, $chatId]);
 
         $query = null;
         $db = null;
