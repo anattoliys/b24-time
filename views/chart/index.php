@@ -10,7 +10,7 @@ if (empty($users)) {
 
 foreach ($users as $key => $user) {
     $users[$key]['color'] = Chart::getColor();
-    $users[$key]['monthTime'] = Time::getUserMonthTime($user['id']);
+    $users[$key]['monthTime'] = Time::getUserMonthTime($user['b24Id']);
 }
 
 $firstTimeItemDate = $users[0]['monthTime'][0]['date'];
