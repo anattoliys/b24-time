@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Client;
+
 class CurlQuery
 {
     /**
@@ -11,21 +13,22 @@ class CurlQuery
      */
     public static function exec($queryUrl, $queryData)
     {
-        $curl = curl_init();
+        try {
+            $client = new Client([
+                'base_uri' => $queryUrl,
+            ]);
 
-        curl_setopt_array($curl, [
-            CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_POST => 1,
-            CURLOPT_HEADER => 0,
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_URL => $queryUrl,
-            CURLOPT_POSTFIELDS => $queryData,
-        ]);
+            $response = $client->post('', [
+                'debug' => false,
+                'verify' => false,
+                'body' => $queryData
+            ]);
 
-        $result = curl_exec($curl);
-        curl_close($curl);
-        $result = json_decode($result, 1);
+            $output = json_decode($response->getBody()->getContents(), 1);
 
-        return $result;
+            return $output;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 }
