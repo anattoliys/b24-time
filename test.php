@@ -17,7 +17,7 @@ if (!empty($users)) {
             $getDayTime = $dayTime->get();
 
             $monthTime = new MonthTime($user);
-            $getMonthTime = $monthTime->get();
+            $getMonthTime = $monthTime->get(true);
 
             $data = [
                 'userId' => $user['id'],
@@ -29,6 +29,8 @@ if (!empty($users)) {
                 'dayTime' => $getDayTime,
                 'monthTime' => $getMonthTime,
             ];
+
+            echo '<pre>';print_r($data);echo '</pre>';
 
             // $telegramBot = new TelegramBot;
             // $telegramBot->dispatcher($data, true);
