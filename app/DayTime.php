@@ -25,12 +25,12 @@ class DayTime extends Tasks
 
             $queryUrl = B24_WEBHOOK . 'task.elapseditem.getlist.json';
 
-            $queryData = http_build_query([
+            $queryData = [
                 'ORDER' => ['ID' => 'DESC'],
                 'FILTER' => ['TASK_ID' => $taskId, '>=CREATED_DATE' => $currentDate],
                 'SELECT' => ['ID', 'TASK_ID', 'MINUTES'],
                 'PARAMS' => [],
-            ]);
+            ];
 
             $curlExec = CurlQuery::exec($queryUrl, $queryData);
 

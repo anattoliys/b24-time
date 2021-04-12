@@ -22,12 +22,12 @@ class Tasks
         }
 
         $queryUrl = B24_WEBHOOK . 'task.item.list.json';
-        $queryData = http_build_query([
+        $queryData = [
             'ORDER' => $order,
             'FILTER' => $filter,
             'PARAMS' => ['NAV_PARAMS' => ['nPageSize' => 50, 'iNumPage' => 1]],
             'SELECT' => $select,
-        ]);
+        ];
 
         $curlExec = CurlQuery::exec($queryUrl, $queryData);
 
@@ -37,12 +37,12 @@ class Tasks
             $totalPages = intval($curlExec['total'] / 50 + 1);
 
             for ($i = 2; $i <= $totalPages; $i++) {
-                $queryDataExt = http_build_query([
+                $queryDataExt = [
                     'ORDER' => $order,
                     'FILTER' => $filter,
                     'PARAMS' => ['NAV_PARAMS' => ['nPageSize' => 50, 'iNumPage' => $i]],
                     'SELECT' => $select,
-                ]);
+                ];
 
                 $curlExecExt = CurlQuery::exec($queryUrl, $queryDataExt);
 
