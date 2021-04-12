@@ -21,7 +21,7 @@ class CurlQuery
             $response = $client->post('', [
                 'debug' => false,
                 'verify' => false,
-                'body' => $queryData
+                'form_params' => $queryData
             ]);
 
             $output = json_decode($response->getBody()->getContents(), 1);
