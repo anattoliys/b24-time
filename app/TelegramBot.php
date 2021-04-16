@@ -2,14 +2,6 @@
 
 class TelegramBot
 {
-    private $apiKey;
-
-    public function __construct()
-    {
-        $apiKey = ApiKey::getKey('b24TimeBot');
-        $this->apiKey = $apiKey;
-    }
-
     /**
      * Dispatcher
      *
@@ -109,7 +101,7 @@ class TelegramBot
      */
     protected function sendMessage($chatId, $text, $parseMode = '')
     {
-        $queryUrl = "https://api.telegram.org/bot{$this->apiKey}/sendMessage";
+        $queryUrl = 'https://api.telegram.org/bot' . TELEGRAM_BOT_API_KEY . '/sendMessage';
         $queryData = [
             'chat_id' => $chatId,
             'text' => $text,
