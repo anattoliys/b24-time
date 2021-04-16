@@ -1,5 +1,9 @@
 <?php
 
+namespace app;
+
+use app\utils\CurlQuery;
+
 class Tasks
 {
     /**

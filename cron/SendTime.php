@@ -1,7 +1,11 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/app/Autoloader.php';
+use app\DayTime;
+use app\MonthTime;
+use app\TelegramBot;
+use app\models\User;
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;
 $users = $userObj->getAll();

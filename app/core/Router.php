@@ -1,12 +1,14 @@
 <?php
 
+namespace app\core;
+
 class Router
 {
     private $routes;
 
     public function __construct()
     {
-        $routsFolder = $_SERVER['DOCUMENT_ROOT'] . '/config/routes.php';
+        $routsFolder = $_SERVER['DOCUMENT_ROOT'] . '/app/config/routes.php';
         $this->routes = require $routsFolder;
     }
 
@@ -49,12 +51,13 @@ class Router
                 $actionName = 'action' . ucfirst(array_shift($segments));
                 $parameters = $segments;
 
-                $controllerFile = $_SERVER['DOCUMENT_ROOT'] . '/controllers/' . $controllerName . '.php';
+                $controllerFile = $_SERVER['DOCUMENT_ROOT'] . '/app/controllers/' . $controllerName . '.php';
 
                 if (file_exists($controllerFile)) {
                     require_once $controllerFile;
                 }
 
+                $controllerName = "app\controllers\\" . $controllerName;
                 $controllerObject = new $controllerName;
 
                 $result = call_user_func_array([$controllerObject, $actionName], $parameters);

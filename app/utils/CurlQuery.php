@@ -1,5 +1,7 @@
 <?php
 
+namespace app\utils;
+
 use GuzzleHttp\Client;
 
 class CurlQuery

@@ -4,8 +4,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/app/Autoloader.php';
+use app\DayTime;
+use app\MonthTime;
+use app\TelegramBot;
+use app\models\User;
+use app\core\Log;
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;
 $users = $userObj->getAll();
@@ -17,7 +22,7 @@ if (!empty($users)) {
             $getDayTime = $dayTime->get();
 
             $monthTime = new MonthTime($user);
-            $getMonthTime = $monthTime->get(true);
+            $getMonthTime = $monthTime->get();
 
             $data = [
                 'userId' => $user['id'],

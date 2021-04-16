@@ -1,5 +1,10 @@
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/views/layouts/header.php';
 
+use app\Chart;
+use app\models\User;
+use app\models\Time;
+use app\utils\Converter;
+
 $dateFormat = 'YYYY-MM-DD';
 $userObj = new User;
 $users = $userObj->getAll();
