@@ -1,5 +1,14 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+use app\DayTime;
+use app\MonthTime;
+use app\models\User;
+use app\models\Time;
+
 require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;

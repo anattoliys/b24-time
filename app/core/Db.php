@@ -1,5 +1,9 @@
 <?php
 
+namespace app\core;
+
+use \PDO;
+
 class Db
 {
     /**

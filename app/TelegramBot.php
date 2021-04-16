@@ -1,5 +1,11 @@
 <?php
 
+namespace app;
+
+use app\models\User;
+use app\utils\Converter;
+use app\utils\CurlQuery;
+
 class TelegramBot
 {
     /**

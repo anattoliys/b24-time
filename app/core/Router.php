@@ -1,5 +1,7 @@
 <?php
 
+namespace app\core;
+
 class Router
 {
     private $routes;
@@ -55,6 +57,7 @@ class Router
                     require_once $controllerFile;
                 }
 
+                $controllerName = "app\controllers\\" . $controllerName;
                 $controllerObject = new $controllerName;
 
                 $result = call_user_func_array([$controllerObject, $actionName], $parameters);

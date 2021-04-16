@@ -1,5 +1,10 @@
 <?php
 
+namespace app\models;
+
+use \PDO;
+use app\core\Db;
+
 class User
 {
     /**

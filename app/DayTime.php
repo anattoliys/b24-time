@@ -1,5 +1,10 @@
 <?php
 
+namespace app;
+
+use app\utils\Converter;
+use app\utils\CurlQuery;
+
 class DayTime extends Tasks
 {
     private $user;
