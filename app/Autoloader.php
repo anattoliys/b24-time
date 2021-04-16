@@ -6,7 +6,7 @@ spl_autoload_register(function ($class) {
     $directories = [
         '/app/',
         '/app/core/',
-        '/models/',
+        '/app/models/',
     ];
 
     foreach ($directories as $directory) {
