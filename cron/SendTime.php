@@ -1,7 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/app/Autoloader.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;
 $users = $userObj->getAll();

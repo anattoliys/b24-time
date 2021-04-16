@@ -4,8 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/app/Autoloader.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;
 $users = $userObj->getAll();
