@@ -86,12 +86,13 @@ class TelegramBot
      */
     protected function sendStatistic($data)
     {
+        $dayTimeHoours = Converter::convertMinutesByFormat($data['dayTime']);
         $monthTimeHours = Converter::convertMinutesByFormat($data['monthTime']);
         $money = number_format($data['monthTime'] * $data['rate'] / 60, 0, '.', ' ');
 
         $text = "<b>Привет, {$data['name']}!</b>\n\n";
         $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
-        $text .= $this->unichr('U+231A') . ' За день - ' . $data['dayTime'] . "\n";
+        $text .= $this->unichr('U+231A') . ' За день - ' . $dayTimeHoours . "\n";
         $text .= $this->unichr('U+1F555') . ' За месяц - ' . $monthTimeHours . "\n";
         $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $money;
 

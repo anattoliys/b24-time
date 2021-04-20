@@ -9,6 +9,7 @@ use app\MonthTime;
 use app\TelegramBot;
 use app\models\User;
 use app\core\Log;
+use app\models\Time;
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 

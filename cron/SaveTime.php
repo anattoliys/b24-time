@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 use app\DayTime;
 use app\MonthTime;
 use app\models\User;
@@ -20,7 +16,7 @@ if (!empty($users)) {
         $getDayTime = $dayTime->get();
 
         $monthTime = new MonthTime($user);
-        $getMonthTime = $monthTime->get(true);
+        $getMonthTime = $monthTime->get();
 
         $data = [
             'userId' => $user['id'],
