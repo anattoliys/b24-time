@@ -29,11 +29,22 @@ class Converter
      * @param string $time
      * @return integer
      */
-    public static function convertToSeconds($time)
+    public static function convertTimeToSeconds($time)
     {
         sscanf($time, "%d:%d:%d", $hours, $minutes, $seconds);
         $timeSeconds = isset($seconds) ? $hours * 3600 + $minutes * 60 + $seconds : $hours * 60 + $minutes;
 
         return $timeSeconds;
+    }
+
+    /**
+     * Converts minutes to seconds
+     *
+     * @param string $minutes
+     * @return integer
+     */
+    public static function convertMinutesToSeconds($minutes)
+    {
+        return $minutes * 60;
     }
 }

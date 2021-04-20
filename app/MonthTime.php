@@ -2,8 +2,6 @@
 
 namespace app;
 
-use app\utils\Converter;
-
 class MonthTime extends Tasks
 {
     private $user;
@@ -18,7 +16,7 @@ class MonthTime extends Tasks
      *
      * @return string
      */
-    public function get($isConvertToHours = false)
+    public function get()
     {
         $allMinutes = 0;
         $monthTasks = $this->getMonthTasks($this->user);
@@ -34,10 +32,6 @@ class MonthTime extends Tasks
                     $allMinutes += $durationFact;
                 }
             }
-        }
-
-        if ($allMinutes > 0 && $isConvertToHours) {
-            $allMinutes = Converter::convertMinutesByFormat($allMinutes);
         }
 
         return $allMinutes;

@@ -2,7 +2,6 @@
 
 namespace app;
 
-use app\utils\Converter;
 use app\utils\CurlQuery;
 
 class DayTime extends Tasks
@@ -43,10 +42,6 @@ class DayTime extends Tasks
                 foreach ($curlExec['result'] as $time) {
                     $allMinutes += intval($time['MINUTES']);
                 }
-            }
-
-            if ($allMinutes > 0) {
-                $allMinutes = Converter::convertMinutesByFormat($allMinutes);
             }
         }
 
