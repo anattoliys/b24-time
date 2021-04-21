@@ -22,15 +22,15 @@ $firstTimeItemDate = $users[0]['monthTime'][0]['date'];
 $currentMonthName = date('F', strtotime($firstTimeItemDate));
 
 foreach ($users as $key => $user) {
-    if ($user['position'] == 'director') {
-        unset($users[$key]);
-    }
-
     if (!empty($user['monthTime'])) {
         foreach ($user['monthTime'] as $k => $time) {
             $timeSeconds = Converter::convertMinutesToSeconds($time['dayTime']);
             $users[$key]['monthTime'][$k]['seconds'] = $timeSeconds;
         }
+    }
+
+    if ($user['position'] == 'director') {
+        unset($users[$key]);
     }
 }
 ?>
