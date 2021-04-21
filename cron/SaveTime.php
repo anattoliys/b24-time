@@ -12,12 +12,14 @@ $users = $userObj->getAll();
 
 if (!empty($users)) {
     foreach ($users as $user) {
-        $dayTime = new DayTime($user);
-        $user['dayTime'] = $dayTime->get();
+        if ($user['position'] != 'director') {
+            $dayTime = new DayTime($user);
+            $user['dayTime'] = $dayTime->get();
 
-        $monthTime = new MonthTime($user);
-        $user['monthTime'] = $monthTime->get();
+            $monthTime = new MonthTime($user);
+            $user['monthTime'] = $monthTime->get();
 
-        Time::saveTime($user);
+            Time::saveTime($user);
+        }
     }
 }

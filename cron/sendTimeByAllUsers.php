@@ -11,16 +11,20 @@ $userObj = new User;
 $users = $userObj->getAll();
 
 if (!empty($users)) {
-    foreach ($users as $user) {
+    foreach ($users as $key => $user) {
         if ($user['position'] != 'director') {
             $dayTime = new DayTime($user);
-            $user['dayTime'] = $dayTime->get();
+            $users[$key]['dayTime'] = $dayTime->get();
 
             $monthTime = new MonthTime($user);
-            $user['monthTime'] = $monthTime->get();
+            $users[$key]['monthTime'] = $monthTime->get();
+        }
+    }
 
+    foreach ($users as $recipient) {
+        if ($recipient['position'] == 'director') {
             $telegramBot = new TelegramBot;
-            $telegramBot->sendStatisticsByUser($user);
+            $telegramBot->sendStatisticsByAllUsers($users, $recipient);
         }
     }
 }
