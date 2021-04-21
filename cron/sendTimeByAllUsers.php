@@ -12,13 +12,15 @@ $users = $userObj->getAll();
 
 if (!empty($users)) {
     foreach ($users as $key => $user) {
-        if ($user['position'] != 'director') {
-            $dayTime = new DayTime($user);
-            $users[$key]['dayTime'] = $dayTime->get();
-
-            $monthTime = new MonthTime($user);
-            $users[$key]['monthTime'] = $monthTime->get();
+        if ($user['position'] == 'director') {
+            unset($users[$key]);
         }
+
+        $dayTime = new DayTime($user);
+        $users[$key]['dayTime'] = $dayTime->get();
+
+        $monthTime = new MonthTime($user);
+        $users[$key]['monthTime'] = $monthTime->get();
     }
 
     foreach ($users as $recipient) {
