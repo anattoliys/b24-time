@@ -8,6 +8,14 @@ use app\utils\CurlQuery;
 
 class TelegramBot
 {
+    private $emoji;
+
+    public function __construct()
+    {
+        $emojiFolder = $_SERVER['DOCUMENT_ROOT'] . '/app/utils/emoji.php';
+        $this->emoji = require $emojiFolder;
+    }
+
     /**
      * Dispatcher
      *
@@ -110,7 +118,7 @@ class TelegramBot
             $dayTimeHoours = Converter::convertMinutesByFormat($user['dayTime']);
             $monthTimeHours = Converter::convertMinutesByFormat($user['monthTime']);
 
-            $text .= $user['name'] . ': за день - ' . $dayTimeHoours . ', за месяц - '  . $monthTimeHours . "\n";
+            $text .=  $this->unichr($this->emoji[array_rand($this->emoji)]) . ' ' . $user['name'] . ': за день - ' . $dayTimeHoours . ', за месяц - '  . $monthTimeHours . "\n";
         }
 
         $this->sendMessage($recipient['chatId'], $text, 'html');
