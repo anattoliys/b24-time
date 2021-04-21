@@ -17,20 +17,22 @@ $userObj = new User;
 $users = $userObj->getAll();
 
 if (!empty($users)) {
-    foreach ($users as $user) {
-        if ($user['b24Id'] == 108) {
-            $dayTime = new DayTime($user);
-            $user['dayTime'] = $dayTime->get();
+    foreach ($users as $key => $user) {
+        $dayTime = new DayTime($user);
+        $users[$key]['dayTime'] = $dayTime->get();
 
-            $monthTime = new MonthTime($user);
-            $user['monthTime'] = $monthTime->get();
+        $monthTime = new MonthTime($user);
+        $users[$key]['monthTime'] = $monthTime->get();
 
-            echo '<pre>';print_r($user);echo '</pre>';
+        if ($user['position'] == 'director') {
+            unset($users[$key]);
+        }
+    }
 
-            // Time::saveTime($user);
-
+    foreach ($users as $recipient) {
+        if ($recipient['b24Id'] == 108) {
             // $telegramBot = new TelegramBot;
-            // $telegramBot->sendStatisticsByUser($user);
+            // $telegramBot->sendStatisticsByAllUsers($users, $recipient);
         }
     }
 }
