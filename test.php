@@ -28,8 +28,9 @@ if (!empty($users)) {
             echo '<pre>';print_r($user);echo '</pre>';
 
             // Time::saveTime($user);
+
             // $telegramBot = new TelegramBot;
-            // $telegramBot->dispatcher($user, true);
+            // $telegramBot->sendStatisticsByUser($user);
         }
     }
 }

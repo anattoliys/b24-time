@@ -14,7 +14,7 @@ class Converter
     public static function convertMinutesByFormat($time, $format = '%02d:%02d')
     {
         if ($time < 1) {
-            return;
+            return 0;
         }
 
         $hours = floor($time / 60);

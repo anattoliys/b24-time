@@ -12,10 +12,9 @@ class TelegramBot
      * Dispatcher
      *
      * @param array $data
-     * @param boolean $sendStatistic
      * @return void
      */
-    public function dispatcher($data, $sendStatistic = false)
+    public function dispatcher($data)
     {
         $chatId = isset($data['message']['chat']['id']) ? $data['message']['chat']['id'] : 0;
         $firstName = isset($data['message']['chat']['first_name']) ? $data['message']['chat']['first_name'] : '';
@@ -27,10 +26,6 @@ class TelegramBot
             $this->greetings($chatId, $firstName, $messagedId);
         } else if ($startMessageId + 2 == $messagedId) {
             $this->conclusion($chatId, $message);
-        }
-
-        if ($sendStatistic) {
-            $this->sendStatistic($data);
         }
     }
 
@@ -79,12 +74,12 @@ class TelegramBot
     }
 
     /**
-     * Sends statistics by time
+     * Sends statistics by user time
      *
      * @param array $data
      * @return void
      */
-    protected function sendStatistic($data)
+    public function sendStatisticsByUser($data)
     {
         $dayTimeHoours = Converter::convertMinutesByFormat($data['dayTime']);
         $monthTimeHours = Converter::convertMinutesByFormat($data['monthTime']);
@@ -97,6 +92,28 @@ class TelegramBot
         $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $money;
 
         $this->sendMessage($data['chatId'], $text, 'html');
+    }
+
+    /**
+     * Sends statistics by all users time
+     *
+     * @param array $data
+     * @param array $chatId
+     * @return void
+     */
+    public function sendStatisticsByAllUsers($data, $recipient)
+    {
+        $text = "<b>Привет, {$recipient['name']}!</b>\n\n";
+        $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
+
+        foreach ($data as $user) {
+            $dayTimeHoours = Converter::convertMinutesByFormat($user['dayTime']);
+            $monthTimeHours = Converter::convertMinutesByFormat($user['monthTime']);
+
+            $text .= $user['name'] . ': за день - ' . $dayTimeHoours . ', за месяц - '  . $monthTimeHours . "\n";
+        }
+
+        $this->sendMessage($recipient['chatId'], $text, 'html');
     }
 
     /**
