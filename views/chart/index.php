@@ -7,7 +7,7 @@ use app\utils\Converter;
 
 $dateFormat = 'YYYY-MM-DD';
 $userObj = new User;
-$users = $userObj->getAll();
+$users = $userObj->getList(['active' => 1]);
 
 if (empty($users)) {
     die('no users');

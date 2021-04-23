@@ -14,7 +14,7 @@ use app\models\Time;
 require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;
-$users = $userObj->getAll();
+$users = $userObj->getList(['active' => 1]);
 
 if (!empty($users)) {
     foreach ($users as $key => $user) {
@@ -29,8 +29,15 @@ if (!empty($users)) {
         }
     }
 
+    echo '<pre>';print_r($users);echo '</pre>';
+
     foreach ($users as $recipient) {
         if ($recipient['b24Id'] == 108) {
+            // Time::saveTime($recipient);
+
+            // $telegramBot = new TelegramBot;
+            // $telegramBot->sendStatisticsByUser($recipient);
+
             // $telegramBot = new TelegramBot;
             // $telegramBot->sendStatisticsByAllUsers($users, $recipient);
         }

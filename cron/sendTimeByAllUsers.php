@@ -8,7 +8,8 @@ use app\models\User;
 require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;
-$users = $userObj->getAll();
+$users = $userObj->getList(['active' => 1]);
+$directors = [];
 
 if (!empty($users)) {
     foreach ($users as $key => $user) {
@@ -19,14 +20,16 @@ if (!empty($users)) {
         $users[$key]['monthTime'] = $monthTime->get();
 
         if ($user['position'] == 'director') {
+            $directors[] = $user;
+
             unset($users[$key]);
         }
     }
 
-    foreach ($users as $recipient) {
-        if ($recipient['position'] == 'director') {
+    if (!empty($directors)) {
+        foreach ($directors as $director) {
             $telegramBot = new TelegramBot;
-            $telegramBot->sendStatisticsByAllUsers($users, $recipient);
+            $telegramBot->sendStatisticsByAllUsers($users, $director);
         }
     }
 }
