@@ -8,7 +8,7 @@ use app\models\User;
 require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;
-$users = $userObj->getAll();
+$users = $userObj->getList(['active' => 1]);
 
 if (!empty($users)) {
     foreach ($users as $user) {

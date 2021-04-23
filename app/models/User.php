@@ -108,16 +108,33 @@ class User
     }
 
     /**
-     * Gets all users
+     * Gets users by filter
      *
+     * @param array $filter
      * @return array
      */
-    public function getAll()
+    public function getList($filter = [])
     {
         $users = [];
+        $sqlFilter = '';
+
+        if (!empty($filter)) {
+            $i = 0;
+            $sqlFilter .= ' WHERE ';
+
+            foreach ($filter as $key => $val) {
+                if ($i > 0) {
+                    $sqlFilter .= ' AND ';
+                }
+
+                $sqlFilter .= "$key = '$val'";
+
+                $i++;
+            }
+        }
 
         $db = Db::connect();
-        $sql = 'SELECT * FROM users';
+        $sql = 'SELECT * FROM users' . $sqlFilter;
 
         $query = $db->query($sql, PDO::FETCH_ASSOC);
 
