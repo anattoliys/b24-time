@@ -34,7 +34,7 @@ class User
     }
 
     /**
-     * Gets the start message id
+     * Gets the update id
      *
      * @param integer $chatId
      * @return integer
