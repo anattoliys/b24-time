@@ -12,20 +12,20 @@ class User
      *
      * @param integer $chatId
      * @param string $name
-     * @param integer $messageId
+     * @param integer $updateId
      * @return array
      */
-    public function create($chatId, $name, $messageId)
+    public function create($chatId, $name, $updateId)
     {
         $date = date('Y-m-d G:i:s');
 
         $db = Db::connect();
         $db->query("SET character_set_client='utf8mb4'");
         $db->query("SET collation_connection='utf8mb4_general_ci'");
-        $sql = 'INSERT INTO users (name, chatId, startMessageId, creationDate) VALUES (?, ?, ?, ?)';
+        $sql = 'INSERT INTO users (name, chatId, updateId, creationDate) VALUES (?, ?, ?, ?)';
 
         $query = $db->prepare($sql);
-        $user = $query->execute([$name, $chatId, $messageId, $date]);
+        $user = $query->execute([$name, $chatId, $updateId, $date]);
 
         $query = null;
         $db = null;
@@ -39,13 +39,13 @@ class User
      * @param integer $chatId
      * @return integer
      */
-    public static function getStartMessageId($chatId)
+    public static function getUpdateId($chatId)
     {
-        $startMessageId = 0;
+        $updateId = 0;
         $users = [];
 
         $db = Db::connect();
-        $sql = "SELECT id, startMessageId FROM users WHERE chatId = '$chatId'";
+        $sql = "SELECT id, updateId FROM users WHERE chatId = '$chatId'";
 
         $query = $db->query($sql, PDO::FETCH_ASSOC);
 
@@ -53,12 +53,12 @@ class User
             $users[] = $row;
         }
 
-        $startMessageId = isset(end($users)['startMessageId']) ? end($users)['startMessageId'] : 0;
+        $updateId = isset(end($users)['updateId']) ? end($users)['updateId'] : 0;
 
         $query = null;
         $db = null;
 
-        return $startMessageId;
+        return $updateId;
     }
 
     /**
