@@ -1,0 +1,21 @@
+CREATE SCHEMA IF NOT EXISTS db_b24_time;
+
+CREATE TABLE IF NOT EXISTS users(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    active BIT(1) NOT NULL DEFAULT 1,
+    name VARCHAR(255) NOT NULL,
+    chatId INT NOT NULL,
+    b24Id INT,
+    rate INT NOT NULL DEFAULT '400',
+    position VARCHAR(255) NOT NULL DEFAULT 'programmer',
+    updateId INT,
+    creationDate DATETIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS time(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    b24Id INT NOT NULL,
+    dayTime INT NOT NULL,
+    monthTime INT NOT NULL,
+    date DATE NOT NULL
+);

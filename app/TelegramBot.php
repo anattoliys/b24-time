@@ -27,12 +27,12 @@ class TelegramBot
         $chatId = isset($data['message']['chat']['id']) ? $data['message']['chat']['id'] : 0;
         $firstName = isset($data['message']['chat']['first_name']) ? $data['message']['chat']['first_name'] : '';
         $message = isset($data['message']['text']) ? $data['message']['text'] : '';
-        $messagedId = isset($data['message']['message_id']) ? $data['message']['message_id'] : 0;
-        $startMessageId = User::getStartMessageId($chatId);
+        $updateId = isset($data['update_id']) ? $data['update_id'] : 0;
+        $dbUpdateId = User::getUpdateId($chatId);
 
         if ($message == '/start') {
-            $this->greetings($chatId, $firstName, $messagedId);
-        } else if ($startMessageId + 2 == $messagedId) {
+            $this->greetings($chatId, $firstName, $updateId);
+        } else if ($dbUpdateId + 1 == $updateId) {
             $this->conclusion($chatId, $message);
         }
     }
@@ -42,10 +42,10 @@ class TelegramBot
      *
      * @param integer $chatId
      * @param string $name
-     * @param integer $messagedId
+     * @param integer $updateId
      * @return void
      */
-    protected function greetings($chatId, $name, $messagedId)
+    protected function greetings($chatId, $name, $updateId)
     {
         $user = new User;
         $userId = User::getByChatId($chatId);
@@ -53,7 +53,7 @@ class TelegramBot
         if ($userId) {
             $text = 'Вы уже указали id в битрикс 24';
         } else {
-            $user->create($chatId, $name, $messagedId);
+            $user->create($chatId, $name, $updateId);
 
             $text = "<b>Привет, {$name}!</b>\n\n";
             $text .= 'Я буду присылать тебе статистику по времени за день'. "\n\n";
@@ -75,7 +75,7 @@ class TelegramBot
         $user = new User;
         $user->setB24Id($chatId, $message);
 
-        $text = $this->unichr('U+1F642') . ' Отлично!' . "\n\n";
+        $text = 'Отлично! ' . $this->unichr('U+1F642') . "\n\n";
         $text .= 'Сообщения будут приходить в 13:00 и 19:00';
 
         $this->sendMessage($chatId, $text, 'html');
