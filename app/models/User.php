@@ -4,6 +4,9 @@ namespace app\models;
 
 use \PDO;
 use app\core\Db;
+use app\DayTime;
+use app\MonthTime;
+use app\utils\Converter;
 
 class User
 {
@@ -62,12 +65,12 @@ class User
     }
 
     /**
-     * Gets user id by b24 id
+     * Gets user id
      *
      * @param integer $chatId
      * @return array
      */
-    public static function getByChatId($chatId)
+    public static function getId($chatId)
     {
         $id = [];
 
@@ -113,7 +116,7 @@ class User
      * @param array $filter
      * @return array
      */
-    public function getList($filter = [])
+    public function getList($filter = [], $getTime = false)
     {
         $users = [];
         $sqlFilter = '';
@@ -125,6 +128,10 @@ class User
             foreach ($filter as $key => $val) {
                 if ($i > 0) {
                     $sqlFilter .= ' AND ';
+                }
+
+                if (strpos($key, '!') !== false) {
+                    $key = str_replace('!', 'NOT ', $key);
                 }
 
                 $sqlFilter .= "$key = '$val'";
@@ -142,9 +149,36 @@ class User
             $users[] = $row;
         }
 
+        if (!empty($users) && $getTime) {
+            foreach ($users as $key => $user) {
+                $users[$key] = $this->getTime($user);
+            }
+        }
+
         $query = null;
         $db = null;
 
         return $users;
+    }
+
+    /**
+     * Gets user time
+     *
+     * @param array $user
+     * @return array
+     */
+    private function getTime($user)
+    {
+        $dayTime = new DayTime($user);
+        $user['dayTimeSeconds'] = $dayTime->get();
+
+        $monthTime = new MonthTime($user);
+        $user['monthTimeSeconds'] = $monthTime->get();
+
+        $user['dayTime'] = Converter::minutesByFormat($user['dayTimeSeconds']);
+        $user['monthTime'] = Converter::minutesByFormat($user['monthTimeSeconds']);
+        $user['money'] = number_format($user['monthTimeSeconds'] * $user['rate'] / 60, 0, '.', ' ');
+
+        return $user;
     }
 }
