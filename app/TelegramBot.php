@@ -3,8 +3,8 @@
 namespace app;
 
 use app\models\User;
-use app\utils\Converter;
 use app\utils\CurlQuery;
+use app\core\Log;
 
 class TelegramBot
 {
@@ -29,11 +29,23 @@ class TelegramBot
         $message = isset($data['message']['text']) ? $data['message']['text'] : '';
         $updateId = isset($data['update_id']) ? $data['update_id'] : 0;
         $dbUpdateId = User::getUpdateId($chatId);
+        $user = new User;
+        $userData = $user->getList(['chatId' => $chatId], true)[0];
 
-        if ($message == '/start') {
-            $this->greetings($chatId, $firstName, $updateId);
-        } else if ($dbUpdateId + 1 == $updateId) {
-            $this->conclusion($chatId, $message);
+        switch ($message):
+            case '/start':
+                $this->greetings($chatId, $firstName, $updateId);
+                break;
+            case '/gettime':
+                $this->sendStatistic($userData);
+                break;
+            case '/help':
+                $this->getHelp($userData);
+                break;
+        endswitch;
+
+        if ($dbUpdateId + 1 == $updateId) {
+            $this->conclusion($userData, $message);
         }
     }
 
@@ -45,10 +57,10 @@ class TelegramBot
      * @param integer $updateId
      * @return void
      */
-    protected function greetings($chatId, $name, $updateId)
+    private function greetings($chatId, $name, $updateId)
     {
         $user = new User;
-        $userId = User::getByChatId($chatId);
+        $userId = User::getId($chatId);
 
         if ($userId) {
             $text = 'Вы уже указали id в битрикс 24';
@@ -66,19 +78,19 @@ class TelegramBot
     /**
      * Conclusion the bot
      *
-     * @param integer $chatId
+     * @param array $userData
      * @param string $message
      * @return void
      */
-    protected function conclusion($chatId, $message)
+    protected function conclusion($userData, $message)
     {
         $user = new User;
-        $user->setB24Id($chatId, $message);
+        $user->setB24Id($userData['chatId'], $message);
 
         $text = 'Отлично! ' . $this->unichr('U+1F642') . "\n\n";
         $text .= 'Сообщения будут приходить в 13:00 и 19:00';
 
-        $this->sendMessage($chatId, $text, 'html');
+        $this->sendMessage($userData['chatId'], $text, 'html');
     }
 
     /**
@@ -87,17 +99,14 @@ class TelegramBot
      * @param array $data
      * @return void
      */
-    public function sendStatisticsByUser($data)
+    public function sendStatistic($data)
     {
-        $dayTimeHoours = Converter::convertMinutesByFormat($data['dayTime']);
-        $monthTimeHours = Converter::convertMinutesByFormat($data['monthTime']);
-        $money = number_format($data['monthTime'] * $data['rate'] / 60, 0, '.', ' ');
-
         $text = "<b>Привет, {$data['name']}!</b>\n\n";
         $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
-        $text .= $this->unichr('U+231A') . ' За день - ' . $dayTimeHoours . "\n";
-        $text .= $this->unichr('U+1F555') . ' За месяц - ' . $monthTimeHours . "\n";
-        $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $money;
+        $text .= $this->unichr('U+231A') . ' За день - ' . $data['dayTime'] . "\n";
+        $text .= $this->unichr('U+1F555') . ' За месяц - ' . $data['monthTime'] . "\n";
+        $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $data['money'] . "\n\n";
+        $text .= '/help - посмотреть все команды';
 
         $this->sendMessage($data['chatId'], $text, 'html');
     }
@@ -115,13 +124,24 @@ class TelegramBot
         $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
 
         foreach ($data as $user) {
-            $dayTimeHoours = Converter::convertMinutesByFormat($user['dayTime']);
-            $monthTimeHours = Converter::convertMinutesByFormat($user['monthTime']);
-
-            $text .=  $this->unichr($this->emoji[array_rand($this->emoji)]) . ' ' . $user['name'] . ': за день - ' . $dayTimeHoours . ', за месяц - '  . $monthTimeHours . "\n";
+            $text .=  $this->unichr($this->emoji[array_rand($this->emoji)]) . ' ' . $user['name'] . ': за день - ' . $user['dayTime'] . ', за месяц - '  . $user['monthTime'] . "\n";
         }
 
         $this->sendMessage($recipient['chatId'], $text, 'html');
+    }
+
+    /**
+     * Get help
+     *
+     * @param array $data
+     * @return void
+     */
+    private function getHelp($data)
+    {
+        $text = "Некоторые вещи, которые умеет бот:\n\n";
+        $text .= "/gettime - получить время\n";
+
+        $this->sendMessage($data['chatId'], $text, 'html');
     }
 
     /**

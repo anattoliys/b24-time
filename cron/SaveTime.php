@@ -1,7 +1,9 @@
 <?php
 
-use app\DayTime;
-use app\MonthTime;
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 use app\models\User;
 use app\models\Time;
 
@@ -9,18 +11,10 @@ $_SERVER['DOCUMENT_ROOT'] = '/var/www/tolik/data/www/b24-time.bx100.ru';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;
-$users = $userObj->getList(['active' => 1]);
+$users = $userObj->getList(['active' => 1, '!position' => 'director'], true);
 
 if (!empty($users)) {
     foreach ($users as $user) {
-        if ($user['position'] != 'director') {
-            $dayTime = new DayTime($user);
-            $user['dayTime'] = $dayTime->get();
-
-            $monthTime = new MonthTime($user);
-            $user['monthTime'] = $monthTime->get();
-
-            Time::saveTime($user);
-        }
+        Time::save($user);
     }
 }

@@ -12,7 +12,7 @@ class Time
      *
      * @return bool
      */
-    public static function saveTime($data)
+    public static function save($data)
     {
         $date = date('Y-m-d');
 
@@ -20,7 +20,7 @@ class Time
         $sql = 'INSERT INTO time (b24Id, dayTime, monthTime, date) VALUES (?, ?, ?, ?)';
 
         $query = $db->prepare($sql);
-        $time = $query->execute([$data['b24Id'], $data['dayTime'], $data['monthTime'], $date]);
+        $time = $query->execute([$data['b24Id'], $data['dayTimeSeconds'], $data['monthTimeSeconds'], $date]);
 
         $query = null;
         $db = null;
@@ -33,7 +33,7 @@ class Time
      *
      * @return array
      */
-    public static function getUserMonthTime($b24Id)
+    public static function getMonthTime($b24Id)
     {
         $time = [];
         $date = date('Y-m-01');

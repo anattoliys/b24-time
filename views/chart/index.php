@@ -7,7 +7,7 @@ use app\utils\Converter;
 
 $dateFormat = 'YYYY-MM-DD';
 $userObj = new User;
-$users = $userObj->getList(['active' => 1]);
+$users = $userObj->getList(['active' => 1, '!position' => 'director']);
 
 if (empty($users)) {
     die('no users');
@@ -15,7 +15,7 @@ if (empty($users)) {
 
 foreach ($users as $key => $user) {
     $users[$key]['color'] = Chart::getColor();
-    $users[$key]['monthTime'] = Time::getUserMonthTime($user['b24Id']);
+    $users[$key]['monthTime'] = Time::getMonthTime($user['b24Id']);
 }
 
 $firstTimeItemDate = $users[0]['monthTime'][0]['date'];
@@ -24,13 +24,9 @@ $currentMonthName = date('F', strtotime($firstTimeItemDate));
 foreach ($users as $key => $user) {
     if (!empty($user['monthTime'])) {
         foreach ($user['monthTime'] as $k => $time) {
-            $timeSeconds = Converter::convertMinutesToSeconds($time['dayTime']);
+            $timeSeconds = Converter::minutesToSeconds($time['dayTime']);
             $users[$key]['monthTime'][$k]['seconds'] = $timeSeconds;
         }
-    }
-
-    if ($user['position'] == 'director') {
-        unset($users[$key]);
     }
 }
 ?>

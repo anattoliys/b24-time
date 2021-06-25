@@ -11,7 +11,7 @@ class Converter
      * @param string $format
      * @return string
      */
-    public static function convertMinutesByFormat($time, $format = '%02d:%02d')
+    public static function minutesByFormat($time, $format = '%02d:%02d')
     {
         if ($time < 1) {
             return 0;
@@ -29,7 +29,7 @@ class Converter
      * @param string $time
      * @return integer
      */
-    public static function convertTimeToSeconds($time)
+    public static function timeToSeconds($time)
     {
         sscanf($time, "%d:%d:%d", $hours, $minutes, $seconds);
         $timeSeconds = isset($seconds) ? $hours * 3600 + $minutes * 60 + $seconds : $hours * 60 + $minutes;
@@ -43,7 +43,7 @@ class Converter
      * @param string $minutes
      * @return integer
      */
-    public static function convertMinutesToSeconds($minutes)
+    public static function minutesToSeconds($minutes)
     {
         return $minutes * 60;
     }
