@@ -36,11 +36,17 @@ class TelegramBot
             case '/start':
                 $this->greetings($chatId, $firstName, $updateId);
                 break;
+            case '/help':
+                $this->getHelp($userData);
+                break;
             case '/gettime':
                 $this->sendStatistic($userData);
                 break;
-            case '/help':
-                $this->getHelp($userData);
+            case '/subscribe':
+                $this->subscribe($userData);
+                break;
+            case '/getinfo':
+                $this->getInfo($userData);
                 break;
         endswitch;
 
@@ -82,10 +88,10 @@ class TelegramBot
      * @param string $message
      * @return void
      */
-    protected function conclusion($userData, $message)
+    private function conclusion($userData, $message)
     {
         $user = new User;
-        $user->setB24Id($userData['chatId'], $message);
+        $user->update($userData['id'], ['b24Id' => $message]);
 
         $text = 'Отлично! ' . $this->unichr('U+1F642') . "\n\n";
         $text .= 'Сообщения будут приходить в 13:00 и 19:00';
@@ -106,7 +112,7 @@ class TelegramBot
         $text .= $this->unichr('U+231A') . ' За день - ' . $data['dayTime'] . "\n";
         $text .= $this->unichr('U+1F555') . ' За месяц - ' . $data['monthTime'] . "\n";
         $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $data['money'] . "\n\n";
-        $text .= '/help - посмотреть все команды';
+        $text .= '/help - команды бота';
 
         $this->sendMessage($data['chatId'], $text, 'html');
     }
@@ -138,8 +144,54 @@ class TelegramBot
      */
     private function getHelp($data)
     {
+        $subscribe = $data['active'] ? 'отписаться' : 'подписаться';
+
         $text = "Некоторые вещи, которые умеет бот:\n\n";
         $text .= "/gettime - получить время\n";
+        $text .= "/getinfo - мои данные\n";
+        $text .= '/subscribe - ' . $subscribe . "\n";
+
+        $this->sendMessage($data['chatId'], $text, 'html');
+    }
+
+    /**
+     * Subscribe or unsubscribe from the sending of time 
+     *
+     * @param array $data
+     * @return void
+     */
+    private function subscribe($data)
+    {
+        $active = 1;
+        $subscribe = 'подписались ';
+        $smile = $this->unichr('U+1F642');
+
+        if ($data['active']) {
+            $active = 0;
+            $subscribe = 'отписались ';
+            $smile = $this->unichr('U+1F641');
+        }
+
+        $user = new User;
+        $user->update($data['id'], ['active' => $active]);
+
+        $text = "Вы " . $subscribe . $smile;
+
+        $this->sendMessage($data['chatId'], $text, 'html');
+    }
+
+    /**
+     * Gets user info
+     *
+     * @param array $data
+     * @return void
+     */
+    private function getInfo($data)
+    {
+        $text = "Мои данные:\n\n";
+        $text .= 'id в б24 - ' . $data['b24Id'] . "\n";
+        $text .= 'ставка - ' . $data['rate'] . "\n";
+        $text .= 'должность - ' . $data['position'] . "\n";
 
         $this->sendMessage($data['chatId'], $text, 'html');
     }
@@ -151,7 +203,7 @@ class TelegramBot
      * @param integer $monthTime
      * @return void
      */
-    protected function sendMessage($chatId, $text, $parseMode = '')
+    private function sendMessage($chatId, $text, $parseMode = '')
     {
         $queryUrl = 'https://api.telegram.org/bot' . TELEGRAM_BOT_API_KEY . '/sendMessage';
         $queryData = [
@@ -182,7 +234,7 @@ class TelegramBot
      * @param string $i
      * @return string
      */
-    protected function unichr($i)
+    private function unichr($i)
     {
         return html_entity_decode(preg_replace("/U\+([0-9A-F]{4,5})/", "&#x\\1;", $i), ENT_NOQUOTES, 'UTF-8');
     }
