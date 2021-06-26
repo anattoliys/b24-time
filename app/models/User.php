@@ -90,22 +90,35 @@ class User
     }
 
     /**
-     * Sets b24 id for user
+     * Updates user
      *
-     * @param integer $chatId
-     * @param string $message
+     * @param integer $userId
+     * @param array $fields
      * @return bool
      */
-    public function setB24Id($chatId, $message)
+    public function update($userId, $fields)
     {
-        $db = Db::connect();
-        $sql = 'UPDATE users SET b24Id = ? WHERE chatId = ?';
+        $result = false;
 
-        $query = $db->prepare($sql);
-        $result = $query->execute([$message, $chatId]);
+        if (!empty($fields)) {
+            $keys = array_keys($fields);
 
-        $query = null;
-        $db = null;
+            foreach ($keys as $key => $val) {
+                $keys[$key] = $val . ' = ?';
+            }
+
+            $keys = implode(', ', $keys);
+            $vals = implode(', ', $fields);
+
+            $db = Db::connect();
+            $sql = 'UPDATE users SET ' . $keys . ' WHERE id = ?';
+
+            $query = $db->prepare($sql);
+            $result = $query->execute([$vals, $userId]);
+
+            $query = null;
+            $db = null;
+        }
 
         return $result;
     }
