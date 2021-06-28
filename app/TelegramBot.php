@@ -4,6 +4,7 @@ namespace app;
 
 use app\models\User;
 use app\utils\CurlQuery;
+use app\utils\Converter;
 use app\core\Log;
 
 class TelegramBot
@@ -111,8 +112,8 @@ class TelegramBot
         $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
         $text .= $this->unichr('U+231A') . ' За день - ' . $data['dayTime'] . "\n";
         $text .= $this->unichr('U+1F555') . ' За месяц - ' . $data['monthTime'] . "\n";
-        $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $data['money'] . "\n\n";
-        $text .= '/help - команды бота';
+        $text .= $this->unichr('U+1F4B5') . ' Сколько денег - ' . $data['money'] . "\n";
+        $text .= "\n" . '/help - команды бота';
 
         $this->sendMessage($data['chatId'], $text, 'html');
     }
@@ -126,12 +127,22 @@ class TelegramBot
      */
     public function sendStatisticsByAllUsers($data, $recipient)
     {
+        $totalTime = 0;
+
         $text = "<b>Привет, {$recipient['name']}!</b>\n\n";
         $text .= "Вот статистика по времени за сегодня (" . date('j.m.Y') . "):\n\n";
 
         foreach ($data as $user) {
             $text .=  $this->unichr($this->emoji[array_rand($this->emoji)]) . ' ' . $user['name'] . ': за день - ' . $user['dayTime'] . ', за месяц - '  . $user['monthTime'] . "\n";
+
+            if ($user['position'] != 'manager') {
+                $totalTime += $user['monthTimeSeconds'];
+            }
         }
+
+        $text .= "\n" . 'Всего за месяц - ' . Converter::minutesByFormat($totalTime) . "\n";
+
+        $text .= "\n" . '/help - команды бота';
 
         $this->sendMessage($recipient['chatId'], $text, 'html');
     }
@@ -164,7 +175,7 @@ class TelegramBot
     {
         $active = 1;
         $subscribe = 'подписались ';
-        $smile = $this->unichr('U+1F642');
+        $smile = $this->unichr('U+1F44D');
 
         if ($data['active']) {
             $active = 0;

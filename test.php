@@ -11,15 +11,15 @@ use app\core\Log;
 require_once $_SERVER['DOCUMENT_ROOT'] . '/app/core/prolog.php';
 
 $userObj = new User;
-// $users = $userObj->getList(['active' => 1, '!position' => 'director'], true);
+// $users = $userObj->getList(['active' => 1], true);
 $directors = $userObj->getList(['b24Id' => 108]);
 
 echo '<pre>';print_r($directors);echo '</pre>';
 
-foreach ($directors as $director) {
-    $telegramBot = new TelegramBot;
-    $telegramBot->sendStatistic($director);
-}
+// foreach ($directors as $director) {
+//     $telegramBot = new TelegramBot;
+//     $telegramBot->sendStatistic($director);
+// }
 
 // if (!empty($users) && !empty($directors)) {
 //     foreach ($directors as $director) {
